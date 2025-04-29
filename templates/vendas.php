@@ -9,13 +9,11 @@ try {
     die('Erro de conexão: ' . $e->getMessage());
 }
 
-// Verifica se o usuário está logado
 if (!isset($_SESSION['nome'])) {
     header('Location: ../index.php');
     exit();
 }
 
-// Busca apenas os jogos (tipo_produto = 'jogo')
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'jogo'");
 $stmt->execute();
 $jogos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -26,11 +24,10 @@ $stmt->execute();
 $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 function gerarNomeImagem($nomeProduto) {
-    // Remove espaços e caracteres especiais
+
     $nome = preg_replace('/[^a-z0-9]/i', '', $nomeProduto);
     $nome = strtolower($nome);
     
-    // Mapeamento manual se necessário (adicione os seus casos específicos)
     $mapeamento = [
         'Resident Evil 4' => 'residentevil.jpg',
         'Valorant' => 'valorant.jpg',
@@ -246,7 +243,7 @@ function gerarNomeImagem($nomeProduto) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Adicionar event listeners a todos os forms de compra
+
     const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
     
     buyForms.forEach(form => {
@@ -264,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Mostrar toast/notificação
                     showToast(result.message, result.productName);
                 } else {
                     alert(result.message);
@@ -276,9 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Função para mostrar notificação
     function showToast(message, productName) {
-        // Criar elemento de toast se não existir
+
         let toastContainer = document.getElementById('toast-container');
         if (!toastContainer) {
             toastContainer = document.createElement('div');
@@ -313,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         toastContainer.appendChild(toast);
         
-        // Remover toast após 5 segundos
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
