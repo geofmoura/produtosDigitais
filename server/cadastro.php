@@ -2,14 +2,11 @@
 session_start();
 header('Content-Type: application/json');
 
-// Configurar exibição de erros para depuração
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Log para depuração
 $log = ['status' => 'iniciando', 'dados' => []];
 
-// Conectar ao banco de dados SQLite
 try {
     $dbPath = __DIR__ . '/../db/database.sqlite';
     $log['database_path'] = $dbPath;
@@ -24,7 +21,6 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $log['database_connection'] = 'conectado';
     
-    // Verificar se a tabela 'usuarios' existe, se não, cria
     $stmt = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='usuarios'");
     if (!$stmt->fetch()) {
         $pdo->exec("CREATE TABLE usuarios (
@@ -44,21 +40,18 @@ try {
     exit();
 }
 
-// Receber dados do formulário
 $nome =  $_POST['nome'] ?? '';
 $email = $_POST['email'] ?? '';
 $senha = $_POST['senha'] ?? '';
 
 $log['dados'] = ['nome' => $nome, 'email' => $email, 'senha' => $senha];
 
-// Validar campos obrigatórios
 if (empty($nome) || empty($email) || empty($senha)) {
     $log['validation'] = 'campos vazios';
     echo json_encode(['success' => false, 'message' => 'Todos os campos são obrigatórios', 'log' => $log]);
     exit();
 }
 
-// Verificar se o email já está cadastrado
 try {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
@@ -75,7 +68,6 @@ try {
     exit();
 }
 
-// Cadastrar usuário (senha em texto puro)
 try {
     $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
     $result = $stmt->execute([$nome, $email, $senha]); 
