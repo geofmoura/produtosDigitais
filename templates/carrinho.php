@@ -1,22 +1,19 @@
 <?php
 session_start();
 
-// Verificar se o usuário está logado
+
 if (!isset($_SESSION['id'])) {
     header('Location: ../index.php');
     exit();
 }
 
-// Configurar caminho absoluto para o banco de dados
 $rootDir = dirname(__DIR__);
 $dbPath = $rootDir . '/db/database.sqlite';
 
-// Verificar se o arquivo do banco existe
 if (!file_exists($dbPath)) {
     die("Erro: Arquivo do banco de dados não encontrado em: " . $dbPath);
 }
 
-// Conexão com o banco de dados
 try {
     $pdo = new PDO('sqlite:' . $dbPath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -24,7 +21,6 @@ try {
     die("Erro de conexão com o banco de dados: " . $e->getMessage());
 }
 
-// Processar remoção de item
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remover'])) {
     $produtoId = (int)$_POST['produto_id'];
     
