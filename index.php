@@ -1,34 +1,22 @@
+<?php
+session_start();
+
+// Se já estiver logado, redireciona para vendas.php
+if (isset($_SESSION['usuario'])) {
+    header('Location: templates/vendas.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impact Store</title>
+    <link rel="stylesheet" href="templates/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0;
-            padding: 0;
-            background:rgb(0, 0, 0);
-            background-size: cover;
-        }
-        .modal-content {
-            background-color: rgb(255, 255, 255);
-        }
-        .switch-modal {
-            color: #0d6efd;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        .error-message {
-            color: #dc3545;
-            margin-top: 10px;
-            display: none;
-        }
-    </style>
 </head>
-<body>
+<body class="home-page">
 
     <!-- Modal de Login  -->
     <div class="modal fade" id="myModalLogin" tabindex="-1" aria-hidden="true">
@@ -36,7 +24,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Faça seu Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formLogin" method="POST" onsubmit="fazerLogin(event)">
@@ -61,7 +48,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Faça seu Cadastro</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formCadastro" method="POST" onsubmit="fazerCadastro(event)">
@@ -84,7 +70,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Abre o modal de login com delay APENAS na primeira vez (ao carregar a página)
         setTimeout(() => {
             const loginModal = new bootstrap.Modal(document.getElementById('myModalLogin'), {
                 backdrop: 'static' // impede fechar clicando fora
@@ -92,13 +77,11 @@
             loginModal.show();
         }, 500);
 
-        // Função para alternar para Cadastro (instantâneo)
         function switchToCadastro() {
             bootstrap.Modal.getInstance(document.getElementById('myModalLogin')).hide();
             new bootstrap.Modal(document.getElementById('myModalCadastro')).show();
         }
 
-        // Função para alternar para Login (instantâneo)
         function switchToLogin() {
             bootstrap.Modal.getInstance(document.getElementById('myModalCadastro')).hide();
             new bootstrap.Modal(document.getElementById('myModalLogin')).show();
@@ -112,17 +95,24 @@
             const formData = new FormData(form);
             const errorElement = document.getElementById('loginError');
             
+            console.log("Enviando dados de login...");
+            
             fetch('server/login.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Resposta de rede não ok');
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Resposta recebida:', data);
                 if (data.success) {
-                    // Redireciona se o login for bem-sucedido
-                    window.location.href = 'templates/vendas.php';
+                    console.log('Login bem-sucedido, redirecionando para:', data.redirect);
+                    window.location.href = data.redirect;
                 } else {
-                    // Exibe mensagem de erro
                     errorElement.textContent = data.message || 'Erro ao fazer login. Verifique suas credenciais.';
                     errorElement.style.display = 'block';
                 }
@@ -146,14 +136,17 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Resposta de rede não ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    // Cadastro bem-sucedido, alterna para login
                     alert('Cadastro realizado com sucesso! Faça login para continuar.');
                     switchToLogin();
                 } else {
-                    // Exibe mensagem de erro
                     errorElement.textContent = data.message || 'Erro ao fazer cadastro.';
                     errorElement.style.display = 'block';
                 }
