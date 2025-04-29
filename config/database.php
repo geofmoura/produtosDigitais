@@ -26,14 +26,3 @@ $pdo->exec("
         senha TEXT NOT NULL
     )
 ");
-
-$pdo->exec("
-    CREATE TABLE IF NOT EXISTS produtos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        preco REAL NOT NULL,
-        tipo TEXT NOT NULL,
-        imagem TEXT NULL DEFAULT 'padrao.jpg'
-
-    )
-");
