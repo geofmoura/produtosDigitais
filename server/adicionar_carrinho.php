@@ -1,54 +1,72 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['id'])) {
-    header('Location: ../index.php');
+    echo json_encode(['status' => 'error', 'message' => 'Por favor, faça login primeiro']);
     exit();
 }
 
-// Verificar se foi enviado o ID do produto
-if (!isset($_POST['produto_id']) || empty($_POST['produto_id'])) {
-    header('Location: ../templates/vendas.php');
+// Validar dados do formulário
+if (!isset($_POST['produto_id']) || !is_numeric($_POST['produto_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Produto inválido']);
     exit();
 }
 
-$produto_id = (int)$_POST['produto_id'];
-$usuario_id = $_SESSION['id'];
-
-// Conectar ao banco de dados
+// Conexão com o banco de dados
 try {
-    $pdo = new PDO('sqlite:' . __DIR__ . '/../db/database.sqlite');
+    $dbPath = __DIR__ . '/../db/database.sqlite';
+    $pdo = new PDO('sqlite:' . $dbPath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die('Erro de conexão: ' . $e->getMessage());
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Erro no banco de dados']);
+    exit();
 }
 
-// Verificar se o produto existe
-$stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
+// Buscar produto no banco
+$produto_id = (int)$_POST['produto_id'];
+$stmt = $pdo->prepare("SELECT id, nome, preco, promocao, tipo FROM produtos WHERE id = ?");
 $stmt->execute([$produto_id]);
 $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$produto) {
-    $_SESSION['mensagem'] = "Produto não encontrado!";
-    header('Location: ../templates/vendas.php');
+    echo json_encode(['status' => 'error', 'message' => 'Produto não encontrado']);
     exit();
 }
 
-// Inicializar o carrinho se não existir
+// Inicializar carrinho se não existir
 if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = [];
 }
 
-// Adicionar ao carrinho (simplificado)
-$_SESSION['carrinho'][] = [
-    'id' => $produto['id'],
-    'nome' => $produto['nome'],
-    'preco' => $produto['promocao'] && $produto['promocao'] != 'NULL' ? $produto['promocao'] : $produto['preco'],
-    'quantidade' => 1
-];
+// Verificar se o produto já está no carrinho
+$encontrado = false;
+foreach ($_SESSION['carrinho'] as &$item) {
+    if ($item['id'] === $produto['id']) {
+        $item['quantidade']++;
+        $encontrado = true;
+        break;
+    }
+}
 
-$_SESSION['mensagem'] = "Produto adicionado ao carrinho!";
-header('Location: ../templates/vendas.php');
+// Adicionar novo item se não existir
+if (!$encontrado) {
+    $_SESSION['carrinho'][] = [
+        'id' => $produto['id'],
+        'nome' => $produto['nome'],
+        'preco' => !empty($produto['promocao']) ? $produto['promocao'] : $produto['preco'],
+        'quantidade' => 1,
+        'imagem' => ($produto['tipo'] === 'jogo' ? 'jogos/' : 'giftcards/') . 
+                   strtolower(str_replace(' ', '-', $produto['nome'])) . '.jpg'
+    ];
+}
+
+// Retornar resposta JSON
+echo json_encode([
+    'status' => 'success',
+    'message' => 'Produto adicionado ao carrinho!',
+    'productName' => $produto['nome']
+]);
 exit();
 ?>

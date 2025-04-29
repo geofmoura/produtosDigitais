@@ -2,39 +2,56 @@
 session_start();
 header('Content-Type: application/json');
 
-// Conectar ao banco de dados
+// Debug (mostra erros)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// 1️⃣ Conectar ao banco de dados SQLite
 try {
-    $pdo = new PDO('sqlite:' . __DIR__ . '/../db/database.sqlite');
+    $dbPath = __DIR__ . '/../db/database.sqlite'; // Ajuste o caminho se necessário
+    $pdo = new PDO('sqlite:' . $dbPath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Erro de conexão com o banco de dados']);
+    echo json_encode(['success' => false, 'message' => 'Erro no banco de dados: ' . $e->getMessage()]);
     exit();
 }
 
-// Receber dados do formulário
+// 2️⃣ Receber dados do POST (verifique se estão chegando)
 $email = $_POST['email'] ?? '';
 $senha = $_POST['senha'] ?? '';
 
 if (empty($email) || empty($senha)) {
-    echo json_encode(['success' => false, 'message' => 'Email e senha são obrigatórios']);
+    echo json_encode(['success' => false, 'message' => 'Preencha email e senha']);
     exit();
 }
 
-// Verificar se o usuário existe
+// 3️⃣ Buscar usuário no banco
 $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
 $stmt->execute([$email]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$usuario || !password_verify($senha, $usuario['senha'])) {
-    echo json_encode(['success' => false, 'message' => 'Email ou senha incorretos']);
+if (!$usuario) {
+    echo json_encode(['success' => false, 'message' => 'Usuário não encontrado']);
     exit();
 }
 
-// Login bem-sucedido
-$_SESSION['id'] = $usuario['id'];
-$_SESSION['nome'] = $usuario['nome'];
-$_SESSION['email'] = $usuario['email'];
+// 4️⃣ Verificar senha (TEXTO PURO - só para teste!)
+if ($senha !== $usuario['senha']) {
+    echo json_encode(['success' => false, 'message' => 'Senha incorreta']);
+    exit();
+}
 
-header('Location: ../templates/vendas.php');
-exit();
+// 5️⃣ Criar sessão (verifique se sessions estão ativas no PHP)
+$_SESSION['usuario'] = [
+    'id' => $usuario['id'],
+    'nome' => $usuario['nome'],
+    'email' => $usuario['email']
+];
+
+// 6️⃣ Resposta de sucesso
+echo json_encode([
+    'success' => true,
+    'message' => 'Login OK!',
+    'redirect' => '/templates/vendas.php' // Ajuste o redirecionamento
+]);
 ?>

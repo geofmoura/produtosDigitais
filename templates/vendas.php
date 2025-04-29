@@ -16,14 +16,32 @@ if (!isset($_SESSION['nome'])) {
 }
 
 // Busca apenas os jogos (tipo_produto = 'jogo')
-$stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo_produto = 'jogo'");
+$stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'jogo'");
 $stmt->execute();
 $jogos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Busca gift cards
-$stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo_produto = 'gift_card'");
+$stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'gift_card'");
 $stmt->execute();
 $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+function gerarNomeImagem($nomeProduto) {
+    // Remove espaços e caracteres especiais
+    $nome = preg_replace('/[^a-z0-9]/i', '', $nomeProduto);
+    $nome = strtolower($nome);
+    
+    // Mapeamento manual se necessário (adicione os seus casos específicos)
+    $mapeamento = [
+        'Resident Evil 4' => 'residentevil.jpg',
+        'Valorant' => 'valorant.jpg',
+        'Minecraft' => 'minecraft.jpg',
+        'League of Legends' => 'lol.jpg',
+        'The Last of Us' => 'thelastofus.jpg'
+        
+    ];
+    
+    return $mapeamento[$nome] ?? $nome . '.jpg';
+}
 ?>
 
 <!DOCTYPE html>
@@ -107,6 +125,13 @@ $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background-color: #ff5722;
             color: white;
         }
+        .toast {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+    .toast.show {   
+    opacity: 1;
+    }
     </style>
 </head>
 <body>
@@ -146,10 +171,10 @@ $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <!-- Imagem do jogo (substituir depois) -->
-                                    <img src="../assets/jogos/<?php echo strtolower(str_replace(' ', '-', $jogo['nome'])); ?>.jpg" 
-                                         class="d-block w-100 rounded" 
-                                         alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
+                                    <!-- Imagem do jogo -->
+                                    <img src="../img<?php echo gerarNomeImagem($jogo['nome']); ?>" 
+                                        class="d-block w-100 rounded" 
+                                        alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
                                 </div>
                                 <div class="col-md-4 p-4">
                                     <h2><?php echo htmlspecialchars($jogo['nome']); ?></h2>
@@ -194,9 +219,9 @@ $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($giftcards as $giftcard): ?>
                     <div class="col-md-3 mb-4">
                         <div class="gift-card">
-                            <img src="../assets/giftcards/<?php echo strtolower(str_replace(' ', '-', $giftcard['nome'])); ?>.jpg" 
-                                class="img-fluid" 
-                                alt="<?php echo htmlspecialchars($giftcard['nome']); ?>">
+                        <img src="../img<?php echo gerarNomeImagem($giftcard['nome']); ?>" 
+                            class="img-fluid" 
+                            alt="<?php echo htmlspecialchars($giftcard['nome']); ?>">
                             <div class="p-3">
                                 <h5><?php echo htmlspecialchars($giftcard['nome']); ?></h5>
                                 <p class="game-price">R$ <?php echo number_format($giftcard['preco'], 2, ',', '.'); ?></p>
@@ -219,5 +244,82 @@ $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar event listeners a todos os forms de compra
+    const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
+    
+    buyForms.forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Mostrar toast/notificação
+                    showToast(result.message, result.productName);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao adicionar ao carrinho');
+            }
+        });
+    });
+    
+    // Função para mostrar notificação
+    function showToast(message, productName) {
+        // Criar elemento de toast se não existir
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.bottom = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.style.backgroundColor = '#5ba32b';
+        toast.style.color = 'white';
+        toast.style.padding = '15px';
+        toast.style.borderRadius = '5px';
+        toast.style.marginBottom = '10px';
+        toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.justifyContent = 'space-between';
+        toast.style.minWidth = '300px';
+        
+        toast.innerHTML = `
+            <div>
+                <strong>${productName}</strong>
+                <div>${message}</div>
+            </div>
+            <a href="carrinho.php" class="btn btn-sm btn-light">Ver Carrinho</a>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        // Remover toast após 5 segundos
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+});
+</script>
 </body>
 </html>
