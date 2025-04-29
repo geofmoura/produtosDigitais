@@ -90,7 +90,7 @@
                 backdrop: 'static' // impede fechar clicando fora
             });
             loginModal.show();
-        }, 5000);
+        }, 500);
 
         // Função para alternar para Cadastro (instantâneo)
         function switchToCadastro() {
