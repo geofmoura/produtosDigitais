@@ -1,0 +1,362 @@
+/* INDEX.PHP*/
+body.home-page { 
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 0;
+    background:rgb(0, 0, 0);
+    background-size: cover;
+}
+div.modal-content {
+    background-color: rgb(255, 255, 255);
+}
+span.switch-modal {
+    color: #0d6efd;
+    cursor: pointer;
+    text-decoration: underline;
+}
+div.error-message {
+    color: #dc3545;
+    margin-top: 10px;
+    display: none;
+}
+
+/* VENDAS.PHP */
+body.vendas-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #1b2838;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.main-content {
+    flex: 1;
+    background-color: transparent;
+    padding-top: 20px;
+}
+
+.navbar-dark {
+    background-color: #171a21;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: #c7d5e0;
+    padding: 8px 15px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+    color: #fff;
+    background-color: rgba(102, 192, 244, 0.2);
+    border-radius: 4px;
+}
+
+.user-section {
+    color: #c7d5e0;
+    display: flex;
+    align-items: center;
+}
+
+.user-greeting {
+    margin-right: 15px;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    color: #ff5722;
+    border: 1px solid #ff5722;
+    padding: 5px 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #ff5722;
+    color: white;
+}
+
+.game-carousel {
+    background-color: #2a475e;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-item {
+    padding: 0;
+}
+
+.game-item {
+    align-items: stretch;
+    min-height: 400px;
+}
+
+.game-image-container {
+    position: relative;
+    padding: 0;
+}
+
+.game-image {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.game-info {
+    background-color: rgba(23, 26, 33, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.game-title {
+    color: #66c0f4;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.game-description {
+    color: #c7d5e0;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.game-purchase {
+    margin-top: auto;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.game-price {
+    font-size: 1.8rem;
+    color: #66c0f4;
+    font-weight: bold;
+}
+
+.game-price-promo {
+    text-decoration: line-through;
+    color: #8f98a0;
+    font-size: 1.2rem;
+}
+
+.purchase-form {
+    margin-top: 15px;
+}
+
+.btn-buy {
+    background-color: #5ba32b;
+    border: none;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: white;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-buy:hover {
+    background-color: #6bc832;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-button {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-button:hover {
+    opacity: 1;
+}
+
+.giftcards-section {
+    padding: 30px 0;
+}
+
+.section-title {
+    color: #66c0f4;
+    border-bottom: 2px solid #2a475e;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+/* Fix for the gift card tremor - add these updated rules to your CSS file */
+
+.giftcards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;  /* Changed from space-between to fix uneven spacing */
+}
+
+.giftcard-item {
+    /* Set a fixed height to prevent variations */
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.giftcard-item:hover {
+    transform: translateY(-5px);
+}
+
+.gift-card {
+    background-color: #2a475e;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;  /* Only transition the shadow, not all properties */
+}
+
+.gift-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.giftcard-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid #1b2838;
+}
+
+.giftcard-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.giftcard-title {
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    height: 50px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.giftcard-price {
+    margin: 15px 0;
+    font-size: 1.3rem;
+}
+
+.site-footer {
+    background-color: #171a21 !important;
+    padding: 20px 0;
+    margin-top: 50px;
+    border-top: 1px solid #2a475e;
+}
+
+.footer-text {
+    margin: 0;
+    color: #c7d5e0;
+    font-size: 0.9rem;
+}
+.toast {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #5ba32b;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 350px;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.toast-message {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.toast-strong {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 992px) {
+    .game-item {
+        flex-direction: column;
+    }
+    
+    .game-image-container,
+    .game-info {
+        width: 100%;
+    }
+    
+    .game-info {
+        padding: 20px;
+    }
+    
+    .giftcard-item {
+        flex: 0 0 48%;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .giftcard-item {
+        flex: 0 0 100%;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .game-title {
+        font-size: 1.5rem;
+    }
+    
+    .game-price {
+        font-size: 1.5rem;
+    }
+}
