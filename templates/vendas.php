@@ -49,8 +49,9 @@ function gerarNomeImagem($nomeProduto) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impact Store - Jogos</title>
-    <link rel="stylesheet" href="style.css"> <!-- Caminho corrigido -->
+    <link rel="stylesheet" href="style.css"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
 <body class="vendas-page">
     <!-- Navbar -->
@@ -83,40 +84,41 @@ function gerarNomeImagem($nomeProduto) {
     <main class="container my-5 main-content">
         <!-- Carrossel de Jogos -->
         <section class="game-carousel">
-            <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <?php foreach ($jogos as $index => $jogo): ?>
-                        <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                            <div class="row game-item">
-                                <div class="col-md-8 game-image-container">
-                                    <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
-                                         onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
-                                         class="d-block w-100 rounded game-image" 
-                                         alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
+    <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <?php foreach ($jogos as $index => $jogo): ?>
+                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <div class="row game-item">
+                        <div class="col-md-8 game-image-container">
+                            <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
+                                 onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
+                                 class="d-block w-100 rounded game-image" 
+                                 alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
+                        </div>
+                        <div class="col-md-4 p-4 game-info">
+                            <h2 class="game-title text-center mb-3"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
+                            <p class="game-description text-center mb-4"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
+
+                            <div class="game-purchase">
+                                <div class="price-container mb-3 text-center">
+                                    <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
+                                        <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                        <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
+                                    <?php else: ?>
+                                        <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="col-md-4 p-4 game-info">
-                                    <h2 class="game-title"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
-                                    <p class="game-description"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-4 game-purchase">
-                                        <div class="price-container">
-                                            <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
-                                                <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                                <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
-                                            <?php else: ?>
-                                                <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                            <?php endif; ?>
-                                        </div>
-                                        <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form">
-                                            <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
-                                            <button type="submit" class="btn btn-buy">Comprar</button>
-                                        </form>
-                                    </div>
-                                </div>
+                                
+                                <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
+                                    <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
+                                    <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
+                                </form>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    </div>
                 </div>
+            <?php endforeach; ?>
+        </div>
                 
                 <!-- Controles do Carrossel -->
                 <button class="carousel-control-prev carousel-button" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
@@ -128,7 +130,7 @@ function gerarNomeImagem($nomeProduto) {
                     <span class="visually-hidden">Próximo</span>
                 </button>
             </div>
-        </section>
+</section>
 
         <!-- Seção de Gift Cards -->
         <section id="giftcards-section" class="mt-5 giftcards-section">
@@ -163,5 +165,89 @@ function gerarNomeImagem($nomeProduto) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Adicionar event listeners a todos os forms de compra
+        const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
+
+        buyForms.forEach(form => {
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                console.log('Response:', result); 
+                if (result.status === 'success') {
+                    // Mostrar toast/notificação
+                    showToast(result.message, result.productName);
+                } else {
+                    alert(result.message);
+                }
+            });
+        });
+
+        // Função para mostrar notificação
+            function showToast(message, productName) {
+            let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.style.backgroundColor = '#28a745';
+        toast.style.color = 'white';
+        toast.style.borderRadius = '5px';
+        toast.style.padding = '15px';
+        toast.style.marginBottom = '10px';
+        toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.justifyContent = 'space-between';
+        toast.style.minWidth = '350px'; // Aumentei um pouco para caber o botão
+
+        // Conteúdo principal
+        const toastContent = document.createElement('div');
+        toastContent.style.flexGrow = '1';
+        toastContent.innerHTML = `<strong>${productName}</strong> ${message}`;
+        toast.appendChild(toastContent);
+
+        // Botão "Ir para Carrinho"
+        const cartButton = document.createElement('button');
+        cartButton.innerHTML = '<i class="bi bi-cart"></i> Ir para Carrinho';
+        cartButton.style.marginLeft = '15px';
+        cartButton.style.padding = '5px 10px';
+        cartButton.style.border = 'none';
+        cartButton.style.borderRadius = '4px';
+        cartButton.style.backgroundColor = '#ffffff';
+        cartButton.style.color = '#28a745';
+        cartButton.style.cursor = 'pointer';
+        cartButton.style.fontWeight = 'bold';
+        cartButton.addEventListener('click', () => {
+            window.location.href = 'carrinho.php';
+        });
+        toast.appendChild(cartButton);
+
+        toastContainer.appendChild(toast);
+
+        // Remover toast após 5 segundos
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+    });
+</script>
 </body>
 </html>
