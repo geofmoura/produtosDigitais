@@ -2,10 +2,16 @@
 session_start();
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['id'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Por favor, faça login primeiro']);
-    exit();
+if(session_status() === PHP_SESSION_NONE) {
+    session_start([
+        'cookie_lifetime' => 86400, // 1 dia
+        'cookie_secure'   => true,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
 }
+
+error_log('Sessão no adicionar_carrinho: ' . print_r($_SESSION, true));
 
 if (!isset($_POST['produto_id']) || !is_numeric($_POST['produto_id'])) {
     echo json_encode(['status' => 'error', 'message' => 'Produto inválido']);
