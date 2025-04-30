@@ -91,7 +91,7 @@ body.vendas-page {
 }
 
 .game-carousel {
-    background-color: #2a475e;
+    background-color: #171a21;
     border-radius: 8px;
     margin-bottom: 30px;
     overflow: hidden;
@@ -136,7 +136,7 @@ body.vendas-page {
 
 .game-description {
     color: #c7d5e0;
-    line-height: 1.6;
+    line-height: 2.1;
     margin-bottom: 20px;
 }
 
@@ -185,19 +185,25 @@ body.vendas-page {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.carousel-button {
-    width: 50px;
-    height: 50px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
+.game-carousel {
+    position: relative;
 }
 
-.carousel-button:hover {
-    opacity: 1;
+.carousel-wrapper {
+    position: relative;
+    overflow: visible;
+}
+
+#gameCarousel {
+    position: static;
+}
+
+.carousel-control-prev {
+    left: 15px;
+}
+
+.carousel-control-next {
+    right: 15px;
 }
 
 .giftcards-section {
@@ -212,17 +218,15 @@ body.vendas-page {
     font-size: 1.8rem;
 }
 
-/* Fix for the gift card tremor - add these updated rules to your CSS file */
-
 .giftcards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: flex-start;  /* Changed from space-between to fix uneven spacing */
+    justify-content: flex-start;
 }
 
 .giftcard-item {
-    /* Set a fixed height to prevent variations */
+
     height: 100%;
     transition: transform 0.3s ease;
 }
@@ -239,7 +243,7 @@ body.vendas-page {
     display: flex;
     flex-direction: column;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;  /* Only transition the shadow, not all properties */
+    transition: box-shadow 0.3s ease; 
 }
 
 .gift-card:hover {
