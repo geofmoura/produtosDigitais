@@ -52,9 +52,9 @@ try {
     }
 
     // Armazenar informações de usuário na sessão
-    $_SESSION['usuario'] = $usuario['id'];
-    $_SESSION['nome'] = $usuario['nome'];
-    $_SESSION['email'] = $usuario['email'];
+    $_SESSION['usuario'] = $usuario;
+    $_SESSION['id'] = $usuario['id'];
+    $_SESSION['email'] = $usuario['nome'];
     
     error_log('Sessão criada: ' . print_r($_SESSION, true));
 
