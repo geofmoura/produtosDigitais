@@ -52,16 +52,16 @@ try {
     }
 
     // Armazenar informações de usuário na sessão
-    $_SESSION['usuario'] = $usuario;
+    $_SESSION['usuario'] = $usuario['nome'];
     $_SESSION['id'] = $usuario['id'];
-    $_SESSION['email'] = $usuario['nome'];
+    $_SESSION['email'] = $usuario['email'];
     
     error_log('Sessão criada: ' . print_r($_SESSION, true));
 
     echo json_encode([
         'success' => true,
         'message' => 'Login OK!',
-        'redirect' => '../templates/vendas.php' // Caminho correto para templates/vendas.php
+        'redirect' => '../templates/vendas.php' 
     ]);
 } catch (Exception $e) {
     error_log('Erro ao processar login: ' . $e->getMessage());
