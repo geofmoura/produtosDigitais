@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 
 if(session_status() === PHP_SESSION_NONE) {
     session_start([
-        'cookie_lifetime' => 86400, // 1 dia
+        'cookie_lifetime' => 86400, 
         'cookie_secure'   => true,
         'cookie_httponly' => true,
         'cookie_samesite' => 'Lax'
