@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Se já estiver logado, redireciona para vendas.php
 if (isset($_SESSION['usuario'])) {
     header('Location: templates/vendas.php');
     exit();
@@ -72,7 +71,7 @@ if (isset($_SESSION['usuario'])) {
     <script>
         setTimeout(() => {
             const loginModal = new bootstrap.Modal(document.getElementById('myModalLogin'), {
-                backdrop: 'static' // impede fechar clicando fora
+                backdrop: 'static'
             });
             loginModal.show();
         }, 500);
@@ -87,7 +86,6 @@ if (isset($_SESSION['usuario'])) {
             new bootstrap.Modal(document.getElementById('myModalLogin')).show();
         }
 
-        // Função para login (envia os dados via AJAX)
         function fazerLogin(event) {
             event.preventDefault();
             
