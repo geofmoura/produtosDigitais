@@ -8,11 +8,9 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 try {
-    // Ajuste do caminho para o banco de dados de acordo com sua estrutura
     $dbPath = __DIR__ . '/../db/database.sqlite'; 
     error_log('Tentando conectar ao banco: ' . $dbPath);
     
-    // Verificar se o arquivo existe
     if (!file_exists($dbPath)) {
         error_log('Arquivo do banco de dados não encontrado: ' . $dbPath);
         echo json_encode(['success' => false, 'message' => 'Banco de dados não encontrado']);
