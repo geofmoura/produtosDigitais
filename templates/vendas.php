@@ -2,11 +2,15 @@
 session_start();
 error_log('Vendas.php - SESSION: ' . print_r($_SESSION, true));
 
+// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario'])) {
     error_log('Usuário não logado, redirecionando para index.php');
     header('Location: ../index.php'); 
     exit();
 }
+
+// Captura o nome do usuário para usar no template
+$nome_usuario = htmlspecialchars($_SESSION['usuario']);
 
 // Conectar ao banco de dados SQLite
 try {
@@ -20,7 +24,6 @@ $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'jogo'");
 $stmt->execute();
 $jogos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Busca gift cards
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'gift_card'");
 $stmt->execute();
 $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -32,11 +35,11 @@ function gerarNomeImagem($nomeProduto) {
         'League of Legends' => 'lol.jpg',
         'Minecraft' => 'minecraft.jpg',
         'Valorant' => 'valorant.jpg',
-        'The Whitcher 3: Wild Hunt' => 'thewitcher.jpg', 
+        'The Witcher 3: Wild Hunt' => 'thewitcher.jpg',
         'Roblox' => 'roblox.jpg',
         'Katana Zero' => 'katanazero.jpg',
         'God of War'=> 'godofwar.jpg',
-        'Counter Strike 2' => 'godofwar.jpg',
+        'Counter Strike 2' => 'counterstrike2.jpg',
         'Gift Card PSN R$100' => 'psncard.jpg',
         'Gift Card IMVU R$25' => 'imvucard.jpg',
         'Gift Card Xbox R$50' => 'xboxcard.jpg',
@@ -60,28 +63,29 @@ function gerarNomeImagem($nomeProduto) {
 <body class="vendas-page">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Impact Store</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Jogos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#giftcards-section">Gift Cards</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="carrinho.php">Carrinho</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center user-section">
-                    <span class="me-3 user-greeting">Olá, <?php echo htmlspecialchars($_SESSION['nome'] ?? 'Usuário'); ?>!</span>
-                    <a href="../server/logout.php" class="btn btn-outline-light logout-btn">Sair</a>
-                </div>
-            </div>
+            <div class="container">
+                <a class="navbar-brand" href="#">Impact Store</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Jogos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#giftcards-section">Gift Cards</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="carrinho.php">Carrinho</a>
+                            </li>
+                        </ul>
+
+                        <div class="d-flex align-items-center user-section">
+                            <span class="me-3 user-greeting">Olá, <?php echo $nome_usuario; ?>!</span>
+                            <a href="../server/logout.php" class="btn btn-outline-light logout-btn">Sair</a>
+                        </div>
+                    </div>
         </div>
     </nav>
 
@@ -138,7 +142,7 @@ function gerarNomeImagem($nomeProduto) {
     </div>
 </section>
             
-        <!-- Seção de Gift Cards - Estilo igual ao carrossel de jogos -->
+        <!-- Seção de Gift Cards -->
 <section id="giftcards-section" class="mt-5 giftcards-section">
     <h2 class="mb-4 section-title">Gift Cards</h2>
     <div class="row">
@@ -201,7 +205,7 @@ function gerarNomeImagem($nomeProduto) {
                 const result = await response.json();
                 console.log('Response:', result); 
                 if (result.status === 'success') {
-                    // Mostrar toast/notificação
+
                     showToast(result.message, result.productName);
                 } else {
                     alert(result.message);
@@ -209,7 +213,6 @@ function gerarNomeImagem($nomeProduto) {
             });
         });
 
-        // Função para mostrar notificação
             function showToast(message, productName) {
             let toastContainer = document.getElementById('toast-container');
         if (!toastContainer) {
