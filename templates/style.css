@@ -171,7 +171,7 @@ body.vendas-page {
     border: none;
     padding: 10px 25px;
     font-weight: bold;
-    color: white;
+    color: rgb(255, 255, 255);
     border-radius: 4px;
     transition: all 0.3s ease;
     text-transform: uppercase;
@@ -192,6 +192,8 @@ body.vendas-page {
 .carousel-wrapper {
     position: relative;
     overflow: visible;
+    display: flex;
+    
 }
 
 #gameCarousel {
@@ -199,11 +201,15 @@ body.vendas-page {
 }
 
 .carousel-control-prev {
-    left: 15px;
+   position: absolute;
+
 }
 
 .carousel-control-next {
-    right: 15px;
+    position: absolute;
+    transform: translate(-50%);
+    
+ 
 }
 
 .giftcards-section {
@@ -324,6 +330,23 @@ body.vendas-page {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+}
+
+/* CARRINHO.PHP */
+body.carrinho   {
+    background-color: #1b2838;
+}
+
+.table-responsive { 
+    background-color: #1b2838;
+ }
+
+.btn-continuar { margin-top: 20px; }
+
+.navbar-carrinho-dark {
+    background-color: #171a21;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* RESPONSIVIDADE */
