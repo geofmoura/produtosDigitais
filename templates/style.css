@@ -232,7 +232,7 @@ body.vendas-page {
 }
 
 .giftcard-item {
-
+    padding: 8px;
     height: 100%;
     transition: transform 0.3s ease;
 }
@@ -252,6 +252,10 @@ body.vendas-page {
     transition: box-shadow 0.3s ease; 
 }
 
+.game-info {
+    border-radius: 0 0 8px 8px !important;
+}
+
 .gift-card:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
@@ -264,7 +268,7 @@ body.vendas-page {
 }
 
 .giftcard-info {
-    padding: 20px;
+    padding: 15px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -385,10 +389,12 @@ body.carrinho   {
     .game-image-container,
     .game-info {
         width: 100%;
+
     }
     
     .game-info {
         padding: 20px;
+        overflow: hidden;
     }
     
     .giftcard-item {
