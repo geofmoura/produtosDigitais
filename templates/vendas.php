@@ -68,12 +68,14 @@ function gerarNomeImagem($nomeProduto) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
-        /* Estilos para a barra de pesquisa */
         .search-container {
-            margin: 20px auto;
-            max-width: 600px;
-            position: relative;
-        }
+    position: relative; 
+    max-width: 350px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px; 
+    margin-left: auto;
+}
         
         .search-input {
             width: 100%;
@@ -93,19 +95,19 @@ function gerarNomeImagem($nomeProduto) {
         }
         
         .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: #343a40;
-            border: 1px solid #495057;
-            border-radius: 0 0 10px 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 400px;
+    background-color: #343a40;
+    border: 1px solid #495057;
+    border-radius: 0 0 10px 10px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
         
         .search-result-item {
             padding: 12px 20px;
