@@ -37,6 +37,17 @@ function gerarNomeImagem($nomeProduto) {
         'Katana Zero' => 'katanazero.jpg',
         'God of War'=> 'godofwar.jpg',
         'Counter Strike 2' => 'counterstrike2.jpg',
+        'Brawlhalla' => 'brawlhalla.jpg',
+        'The Elder Scrolls V: Skyrim' => 'skyrim.jpg',
+        'Free Fire' => 'freefire.jpg',
+        'Baldur\'s Gate 3' => 'baldursgate.jpg',
+        'Mad Max' => 'madmax.jpg',
+        'Panicore' => 'panicore.jpg',
+        'Shadow of Mordor' => 'shadow.jpg',
+        'Castlevania: Lords of Shadow' => 'castlevania.jpg',
+        'Dying Light' => 'dyinglight.jpg',
+        'Dead Rising 3' => 'deadrising.jpg',
+        'Call of Duty: Warzone' => 'warzone.jpg',
         'Gift Card PSN R$100' => 'psncard.jpg',
         'Gift Card IMVU R$25' => 'imvucard.jpg',
         'Gift Card Xbox R$50' => 'xboxcard.jpg',
@@ -56,6 +67,90 @@ function gerarNomeImagem($nomeProduto) {
     <link rel="stylesheet" href="style.css"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        /* Estilos para a barra de pesquisa */
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid #6c757d;
+            background-color: #343a40;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #343a40;
+            border: 1px solid #495057;
+            border-radius: 0 0 10px 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .search-result-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            color: white;
+            border-bottom: 1px solid #495057;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-result-item:hover {
+            background-color: #495057;
+        }
+        
+        .search-result-item .type {
+            font-size: 0.9em;
+            background-color: #212529;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: #adb5bd;
+        }
+        
+        .search-result-item .price {
+            font-weight: bold;
+            color: #20c997;
+        }
+        
+        .no-results {
+            padding: 15px;
+            color: #adb5bd;
+            text-align: center;
+        }
+        
+        .carousel-item.highlight-search-result {
+            animation: highlight 2s ease;
+        }
+        
+        @keyframes highlight {
+            0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+            50% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+        }
+    </style>
 </head>
 <body class="vendas-page">
     <!-- Navbar -->
@@ -70,7 +165,6 @@ function gerarNomeImagem($nomeProduto) {
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Jogos</a>
                     </li>   
-                    
                     <li class="nav-item">
                         <a class="nav-link" href="#giftcards-section">Gift Cards</a>
                     </li>
@@ -87,21 +181,13 @@ function gerarNomeImagem($nomeProduto) {
         </div>
     </nav>
     
-        <div class="search-outer-container">
-            <div class="container">
-                <div class="row justify-content-end">
-                    <div class="col-auto">
-                        <div class="search-wrapper">
-                            <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar jogos ou gift cards..." autocomplete="off">
-                            <div id="searchResults" class="search-results"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <main class="container my-5 main-content">
+        <!-- Barra de Pesquisa -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar jogos ou gift cards..." autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
         </div>
 
-    <div class="container main-container">
-    <main class="container my-5 main-content">
         <!-- Carrossel de Jogos -->
         <section class="game-carousel">
             <div class="carousel-wrapper">
@@ -194,15 +280,15 @@ function gerarNomeImagem($nomeProduto) {
     </main>
 
     <footer class="site-footer">
-    <div class="container-fluid text-center"> <!-- Alterado para container-fluid -->
-        <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
-    </div>
-</footer>
+        <div class="container-fluid text-center">
+            <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Configuração dos listeners para os formulários de compra
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
     const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
     
     buyForms.forEach(form => {
@@ -219,10 +305,9 @@ function gerarNomeImagem($nomeProduto) {
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Chama a função para mostrar a notificação
                     showToast(result.message, result.productName);
                 } else {
-                    alert(result.message); // Fallback para caso de erro
+                    alert(result.message);
                 }
             } catch (error) {
                 console.error('Erro:', error);
@@ -231,11 +316,9 @@ function gerarNomeImagem($nomeProduto) {
         });
     });
 
-    // Função para mostrar a notificação
     function showToast(message, productName) {
         let toastContainer = document.getElementById('toast-container');
         
-        // Cria o container se não existir
         if (!toastContainer) {
             toastContainer = document.createElement('div');
             toastContainer.id = 'toast-container';
@@ -246,7 +329,6 @@ function gerarNomeImagem($nomeProduto) {
             document.body.appendChild(toastContainer);
         }
 
-        // Cria o toast
         const toast = document.createElement('div');
         toast.className = 'toast show';
         toast.style.backgroundColor = '#28a745';
@@ -262,7 +344,6 @@ function gerarNomeImagem($nomeProduto) {
         toast.style.maxWidth = '400px';
         toast.style.transition = 'all 0.3s ease';
 
-        // Conteúdo do toast
         const toastContent = document.createElement('div');
         toastContent.style.flexGrow = '1';
         toastContent.innerHTML = `
@@ -270,7 +351,6 @@ function gerarNomeImagem($nomeProduto) {
         `;
         toast.appendChild(toastContent);
 
-        // Botão "Ir para Carrinho"
         const cartButton = document.createElement('button');
         cartButton.innerHTML = '<i class="bi bi-cart"></i> Ver Carrinho';
         cartButton.style.marginLeft = '15px';
@@ -286,18 +366,153 @@ function gerarNomeImagem($nomeProduto) {
         });
         toast.appendChild(cartButton);
 
-        // Adiciona o toast ao container
         toastContainer.appendChild(toast);
 
-        // Remove o toast após 5 segundos
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
         }, 5000);
     }
 
-    // ... (o resto do seu código de pesquisa pode permanecer aqui)
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    function formatPrice(price) {
+        return 'R$ ' + parseFloat(price).toFixed(2).replace('.', ',');
+    }
+
+    const allProducts = [
+        <?php 
+        foreach ($jogos as $jogo): 
+            echo "{
+                id: {$jogo['id']},
+                nome: '" . addslashes($jogo['nome']) . "',
+                tipo: 'jogo',
+                preco: {$jogo['preco']},
+                promocao: " . ($jogo['promocao'] ? $jogo['promocao'] : 'null') . ",
+                descricao: '" . addslashes($jogo['descricao']) . "'
+            },";
+        endforeach; 
+        foreach ($giftcards as $giftcard): 
+            echo "{
+                id: {$giftcard['id']},
+                nome: '" . addslashes($giftcard['nome']) . "',
+                tipo: 'gift_card',
+                preco: {$giftcard['preco']},
+                promocao: " . ($giftcard['promocao'] ? $giftcard['promocao'] : 'null') . ",
+                descricao: '" . addslashes($giftcard['descricao']) . "'
+            },";
+        endforeach; 
+        ?>
+    ];
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        if (searchTerm.length < 2) {
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+            return;
+        }
+        
+        const filteredProducts = allProducts.filter(product => 
+            product.nome.toLowerCase().includes(searchTerm)
+        ).slice(0, 8);
+        
+        displaySearchResults(filteredProducts);
+    });
+    
+    function displaySearchResults(products) {
+        searchResults.innerHTML = '';
+        
+        if (products.length === 0) {
+            searchResults.innerHTML = '<div class="no-results">Nenhum produto encontrado</div>';
+            searchResults.style.display = 'block';
+            return;
+        }
+        
+        products.forEach(product => {
+            const priceToShow = product.promocao && product.promocao !== null ? 
+                product.promocao : product.preco;
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.innerHTML = `
+                <div>
+                    <strong>${product.nome}</strong>
+                    <span class="type">${product.tipo === 'jogo' ? 'Jogo' : 'Gift Card'}</span>
+                </div>
+                <div class="price">${formatPrice(priceToShow)}</div>
+            `;
+            
+            resultItem.addEventListener('click', () => {
+                if (product.tipo === 'jogo') {
+                    const carousel = bootstrap.Carousel.getOrCreateInstance('#gameCarousel');
+                    const carouselItems = document.querySelectorAll('#gameCarousel .carousel-item');
+                    let foundIndex = -1;
+                    
+                    carouselItems.forEach((item, index) => {
+                        const itemName = item.querySelector('.game-title').textContent;
+                        if (itemName === product.nome) {
+                            foundIndex = index;
+                        }
+                    });
+                    
+                    if (foundIndex >= 0) {
+                        carousel.to(foundIndex);
+                        
+                        carouselItems[foundIndex].classList.add('highlight-search-result');
+                        setTimeout(() => {
+                            carouselItems[foundIndex].classList.remove('highlight-search-result');
+                        }, 8000);
+                        
+                        const carouselElement = document.querySelector('.game-carousel');
+                        const yOffset = -100;
+                        const y = carouselElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                        window.scrollTo({top: y, behavior: 'smooth'});
+                    }
+                } else {
+                    document.getElementById('giftcards-section').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    const giftCardElements = document.querySelectorAll('.giftcard-item');
+                    giftCardElements.forEach(element => {
+                        const cardName = element.querySelector('.game-title').textContent;
+                        if (cardName === product.nome) {
+                            element.style.boxShadow = '0 0 0 3px rgba(13, 110, 253, 0.5)';
+                            setTimeout(() => {
+                                element.style.boxShadow = '';
+                            }, 2000);
+                        }
+                    });
+                }
+                
+                searchResults.style.display = 'none';
+                searchInput.value = product.nome;
+            });
+            
+            searchResults.appendChild(resultItem);
+        });
+        
+        searchResults.style.display = 'block';
+    }
+    
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && searchResults.style.display === 'block') {
+            const firstResult = searchResults.querySelector('.search-result-item');
+            if (firstResult) {
+                firstResult.click();
+            }
+        }
+    });
 });
-    </script>
+</script>
 </body>
 </html>
