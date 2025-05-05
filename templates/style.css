@@ -1,13 +1,21 @@
 /* INDEX.PHP*/
 body.home-page { 
-    font-family: Arial, sans-serif; 
+    font-family: 'Arial', sans-serif;
+    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
-    background: #1b2838;;
-    background-size: cover;
+
 }
 div.modal-content {
-    background-color: rgb(255, 255, 255);
+    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
 }
 span.switch-modal {
     color: #0d6efd;
@@ -23,11 +31,18 @@ div.error-message {
 /* VENDAS.PHP */
 body.vendas-page {
     font-family: 'Arial', sans-serif;
-    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
+    background-image: url('/img/background2.jpg');
     color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -41,7 +56,7 @@ body.vendas-page {
 }
 
 .navbar-dark {
-    background-color: #171a21;
+    background-color: #030e28;
     padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
@@ -62,7 +77,6 @@ body.vendas-page {
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link:hover {
     color: #fff;
-    background-color: rgba(102, 192, 244, 0.2);
     border-radius: 4px;
 }
 
@@ -91,7 +105,7 @@ body.vendas-page {
 }
 
 .game-carousel {
-    background-color: #171a21;
+    background-color: #030e28;
     border-radius: 8px;
     margin-bottom: 30px;
     overflow: hidden;
@@ -121,21 +135,23 @@ body.vendas-page {
 }
 
 .game-info {
-    background-color: rgba(23, 26, 33, 0.8);
+    background-color: #030e28;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .game-title {
-    color: #66c0f4;
+    color: #ffffff;
     margin-bottom: 20px;
     font-size: 2rem;
     font-weight: bold;
+    font-family: 'Play';
+    src: url('/fonts/Play-Regular.ttf') format('truetype');
 }
 
 .game-description {
-    color: #c7d5e0;
+    color: #f5f5f5;
     line-height: 2.1;
     margin-bottom: 20px;
 }
@@ -217,7 +233,7 @@ body.vendas-page {
 }
 
 .section-title {
-    color: #66c0f4;
+    color: #ffffff;
     border-bottom: 2px solid #2a475e;
     padding-bottom: 10px;
     margin-bottom: 30px;
@@ -242,7 +258,7 @@ body.vendas-page {
 }
 
 .gift-card {
-    background-color: #2a475e;
+    background-color: #030e28;
     border-radius: 8px;
     overflow: hidden;
     height: 100%;
@@ -291,12 +307,12 @@ body.vendas-page {
 }
 
 .site-footer {
-    background-color: #171a21 !important;
+    background-color: #030e28 !important;
     padding: 20px 0;
-    margin-top: auto; /* Alterado de 50px para auto */
-    border-top: 1px solid #2a475e;
+    margin-top: auto; 
+    border-top: 1px solid #030e28;
     width: 100%;
-    flex-shrink: 0; /* Adicionado */
+    flex-shrink: 0;
 }
 
 .site-footer .container {
@@ -363,7 +379,16 @@ body.vendas-page {
 
 /* CARRINHO.PHP */
 body.carrinho   {
-    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
+    font-family: 'Arial', sans-serif;
+    background-image: url('/img/background2.jpg');
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
 }
 
