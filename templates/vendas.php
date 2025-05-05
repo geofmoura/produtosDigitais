@@ -79,10 +79,10 @@ function gerarNomeImagem($nomeProduto) {
         
         .search-input {
             width: 100%;
-            padding: 12px 20px;
-            border-radius: 25px;
-            border: 2px solid #6c757d;
-            background-color: #343a40;
+            padding: 12px 10px;
+            border-radius: 15px;
+            border: 2px solid #030e28;
+            background-color: #030e28;
             color: white;
             font-size: 1.1rem;
             transition: all 0.3s;
@@ -100,8 +100,8 @@ function gerarNomeImagem($nomeProduto) {
     left: 0;
     width: 100%;
     max-height: 400px;
-    background-color: #343a40;
-    border: 1px solid #495057;
+    background-color: #030e28;
+    border: 1px solid #030e28;
     border-radius: 0 0 10px 10px;
     overflow-y: auto;
     z-index: 1000;
@@ -113,7 +113,7 @@ function gerarNomeImagem($nomeProduto) {
             padding: 12px 20px;
             cursor: pointer;
             color: white;
-            border-bottom: 1px solid #495057;
+            border-bottom: 1px solid #030e28;
             transition: background-color 0.2s;
             display: flex;
             justify-content: space-between;
