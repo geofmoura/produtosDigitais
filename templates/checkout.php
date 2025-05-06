@@ -32,25 +32,32 @@ foreach ($carrinho as $item) {
 
 // Processar finalização da compra
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
+    $transactionStarted = false;
     try {
-        $pdo->beginTransaction();
+        if (!isset($_SESSION['usuario_id'])) {
+            throw new Exception("Usuário não identificado. Faça login novamente.");
+        }
         
-        // Inserir pedido
+        if (empty($_POST['email'])) {
+            throw new Exception("Email para envio é obrigatório.");
+        }
+
+        $pdo->beginTransaction();
+        $transactionStarted = true;
+
         $stmt = $pdo->prepare("INSERT INTO pedidos (usuario_id, total, data_pedido, email_envio) VALUES (?, ?, datetime('now'), ?)");
         $stmt->execute([
-            $_SESSION['usuario_id'], 
+            $_SESSION['usuario_id'],
             $total,
-            $_POST['email'] // Email para envio dos produtos
+            $_POST['email']
         ]);
         $pedido_id = $pdo->lastInsertId();
         
-        // Inserir itens do pedido
         $stmt = $pdo->prepare("INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)");
         
         foreach ($carrinho as $item) {
             $stmt->execute([$pedido_id, $item['id'], $item['quantidade'], $item['preco']]);
             
-            // Gerar códigos/chaves para produtos digitais (exemplo simplificado)
             if ($item['tipo'] === 'jogo' || $item['tipo'] === 'giftcard') {
                 $codigo = generateRandomCode(16);
                 $pdo->prepare("INSERT INTO codigos_ativos (pedido_id, produto_id, codigo, status) VALUES (?, ?, ?, 'ativo')")
@@ -58,20 +65,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
             }
         }
         
+
         $pdo->commit();
-        
-        // Limpar carrinho e mostrar mensagem de sucesso
+        $transactionStarted = false;
+
         unset($_SESSION['carrinho']);
         $_SESSION['sucesso_pedido'] = "Pedido #$pedido_id realizado com sucesso! Os produtos serão enviados para seu email.";
         header('Location: ../templates/vendas.php');
         exit();
+        
     } catch (Exception $e) {
-        $pdo->rollBack();
+        if ($transactionStarted) {
+            try {
+                $pdo->rollBack();
+            } catch (PDOException $rollbackException) {
+                $e = new Exception($e->getMessage() . " - Falha no rollback: " . $rollbackException->getMessage(), 0, $e);
+            }
+        }
+        
         $erro = "Erro ao finalizar pedido: " . $e->getMessage();
     }
 }
 
-// Função para gerar códigos aleatórios
 function generateRandomCode($length = 16) {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $code = '';
@@ -90,66 +105,10 @@ function generateRandomCode($length = 16) {
     <title>Finalizar Compra - Impact Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        html, body {
-            min-height: 100%;
-            height: auto;
-        }
-        
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
-            color: #f8f9fa;
-        }
-        
-        .content-wrapper {
-            flex: 1;
-            padding-bottom: 20px;
-        }
-        
-        .site-footer {
-            flex-shrink: 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background-color: #1a1a1a;
-            margin-top: auto;
-        }
-        
-        .checkout-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .resumo-pedido {
-            background-color: #2c2c2c;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .form-checkout {
-            background-color: #2c2c2c;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-        }
-        
-        .form-control, .form-select {
-            background-color: #1a1a1a;
-            border-color: #444;
-            color: #fff;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            background-color: #1a1a1a;
-            color: #fff;
-            border-color: #555;
-            box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="d-flex flex-column">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body class="checkout-page vendas-page d-flex flex-column">
+<nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">Impact Store</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -264,15 +223,14 @@ function generateRandomCode($length = 16) {
         </div>
     </div>
     
-    <footer class="bg-dark text-white py-4 mt-auto site-footer">
-        <div class="container text-center">
-            <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+    <footer class="site-footer">
+    <div class="container-fluid text-center">
+        <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
+    </div>
+</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Máscaras para os campos de pagamento
         document.getElementById('numero_cartao').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1 ');
         });
