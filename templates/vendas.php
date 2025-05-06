@@ -64,95 +64,12 @@ function gerarNomeImagem($nomeProduto) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impact Store - Jogos</title>
-    <link rel="stylesheet" href="style.css"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <style>
-        .search-container {
-    position: relative; 
-    max-width: 350px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-right: 20px; 
-    margin-left: auto;
-}
-        
-        .search-input {
-            width: 100%;
-            padding: 12px 10px;
-            border-radius: 15px;
-            border: 2px solid #030e28;
-            background-color: #030e28;
-            color: white;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-        }
-        
-        .search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 400px;
-    background-color: #030e28;
-    border: 1px solid #030e28;
-    border-radius: 0 0 10px 10px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-        
-        .search-result-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            color: white;
-            border-bottom: 1px solid #030e28;
-            transition: background-color 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .search-result-item:hover {
-            background-color: #495057;
-        }
-        
-        .search-result-item .type {
-            font-size: 0.9em;
-            background-color: #212529;
-            padding: 3px 8px;
-            border-radius: 12px;
-            color: #adb5bd;
-        }
-        
-        .search-result-item .price {
-            font-weight: bold;
-            color: #20c997;
-        }
-        
-        .no-results {
-            padding: 15px;
-            color: #adb5bd;
-            text-align: center;
-        }
-        
-        .carousel-item.highlight-search-result {
-            animation: highlight 2s ease;
-        }
-        
-        @keyframes highlight {
-            0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
-            50% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0.3); }
-            100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
-        }
-    </style>
+    <link rel="preload" href="../img/background.jpg" as="image">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="style.css"> 
+
 </head>
 <body class="vendas-page">
     <!-- Navbar -->
@@ -218,10 +135,18 @@ function gerarNomeImagem($nomeProduto) {
                                                 <?php endif; ?>
                                             </div>
                                             
-                                            <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
-                                                <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
-                                                <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
-                                            </form>
+                                            <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
+                                                <!-- Botão de Download (produto gratuito) -->
+                                                <a href="../server/download.php?produto_id=<?php echo $jogo['id']; ?>" class="btn btn-download w-100">
+                                                    BAIXAR
+                                                </a>
+                                            <?php else: ?>
+                                                <!-- Botão de Comprar (produto pago) -->
+                                                <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
+                                                    <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
+                                                    <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
+                                                </form>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -288,9 +213,8 @@ function gerarNomeImagem($nomeProduto) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
     const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
     
     buyForms.forEach(form => {
