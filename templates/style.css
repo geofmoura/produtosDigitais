@@ -1,48 +1,16 @@
-/* INDEX.PHP*/
-body.home-page { 
+/* ===== ESTILOS GERAIS ===== */
+body {
     font-family: 'Arial', sans-serif;
-    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
     color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    margin: 0;
-    padding: 0;
-
-}
-div.modal-content {
-    background-image: linear-gradient(rgb(12, 21, 31), #3F4B61);
-}
-span.switch-modal {
-    color: #0d6efd;
-    cursor: pointer;
-    text-decoration: underline;
-}
-div.error-message {
-    color: #dc3545;
-    margin-top: 10px;
-    display: none;
-}
-
-/* VENDAS.PHP */
-body.vendas-page {
-    font-family: 'Arial', sans-serif;
-    background-image: url('/img/background2.jpg');
-    color: #ffffff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-
-    margin: 0;
-    padding: 0;
 }
 
 .container {
@@ -55,7 +23,40 @@ body.vendas-page {
     padding-top: 20px;
 }
 
-.navbar-dark {
+.content-wrapper {
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+/* ===== ESTILOS ESPECÍFICOS POR PÁGINA ===== */
+
+/* --- Home Page --- */
+body.home-page {
+    background-color: #030e28;
+}
+
+/* --- Vendas Page --- */
+body.vendas-page {
+    background-image: url('/img/background2.jpg');
+}
+
+/* --- Carrinho Page --- */
+body.carrinho {
+    display: flex;
+    flex-direction: column;
+    background-image: url('/img/background2.jpg');
+
+}
+
+/* --- Checkout Page --- */
+body.checkout-page {
+    background-image: url('/img/background2.jpg');
+}
+
+/* ===== COMPONENTES COMUNS ===== */
+
+/* --- Navbar --- */
+.navbar-dark, .navbar-carrinho-dark {
     background-color: #030e28;
     padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -104,16 +105,110 @@ body.vendas-page {
     color: white;
 }
 
+/* --- Barra de Pesquisa --- */
+.search-container {
+    position: relative; 
+    max-width: 350px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px; 
+    margin-left: auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 10px;
+    border-radius: 15px;
+    border: 2px solid #030e28;
+    background-color: #030e28;
+    color: white;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 400px;
+    background-color: #030e28;
+    border: 1px solid #030e28;
+    border-radius: 0 0 10px 10px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: white;
+    border-bottom: 1px solid #030e28;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-result-item:hover {
+    background-color: #495057;
+}
+
+.search-result-item .type {
+    font-size: 0.9em;
+    background-color: #212529;
+    padding: 3px 8px;
+    border-radius: 12px;
+    color: #adb5bd;
+}
+
+.search-result-item .price {
+    font-weight: bold;
+    color: #20c997;
+}
+
+.no-results {
+    padding: 15px;
+    color: #adb5bd;
+    text-align: center;
+}
+
+/* --- Carrossel --- */
 .game-carousel {
     background-color: #030e28;
     border-radius: 8px;
     margin-bottom: 30px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: visible;
+    display: flex;
 }
 
 .carousel-item {
     padding: 0;
+}
+
+.carousel-item.highlight-search-result {
+    animation: highlight 2s ease;
+}
+
+@keyframes highlight {
+    0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    50% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0.3); }
+    100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
 }
 
 .game-item {
@@ -139,6 +234,7 @@ body.vendas-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border-radius: 0 0 8px 8px !important;
 }
 
 .game-title {
@@ -147,7 +243,6 @@ body.vendas-page {
     font-size: 2rem;
     font-weight: bold;
     font-family: 'Play';
-    src: url('/fonts/Play-Regular.ttf') format('truetype');
 }
 
 .game-description {
@@ -183,7 +278,7 @@ body.vendas-page {
 }
 
 .btn-buy {
-    background-color: #5ba32b;
+    background-color: #030e28;
     border: none;
     padding: 10px 25px;
     font-weight: bold;
@@ -195,39 +290,41 @@ body.vendas-page {
 }
 
 .btn-buy:hover {
-    background-color: #6bc832;
+    background-color: #081532;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.32);
 }
 
-.game-carousel {
-    position: relative;
+.btn-download {
+    background-color: #030e28;
+    border: none;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.carousel-wrapper {
-    position: relative;
-    overflow: visible;
-    display: flex;
-    
-}
-
-#gameCarousel {
-    position: static;
+.btn-download:hover {
+    background-color: #081532;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.32);
 }
 
 .carousel-control-prev {
-   position: absolute;
-
+    position: absolute;
 }
 
 .carousel-control-next {
     position: absolute;
     transform: translate(-50%);
-    
- 
 }
 
+/* --- Seção de Gift Cards --- */
 .giftcards-section {
     padding: 30px 0;
 }
@@ -268,10 +365,6 @@ body.vendas-page {
     transition: box-shadow 0.3s ease; 
 }
 
-.game-info {
-    border-radius: 0 0 8px 8px !important;
-}
-
 .gift-card:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
@@ -306,26 +399,182 @@ body.vendas-page {
     font-size: 1.3rem;
 }
 
-.site-footer {
-    background-color: #030e28 !important;
-    padding: 20px 0;
-    margin-top: auto; 
-    border-top: 1px solid #030e28;
-    width: 100%;
-    flex-shrink: 0;
+/* --- Tabelas --- */
+.table-responsive {
+    background-color: #030e28;
+    margin: 30px 30px 20px 30px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 0.5rem 1rem #030e28;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
-.site-footer .container {
-    max-width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
+.table-dark {
+    color: #fff;
+    background-color: #030e28;
+    border-color: #454d55;
 }
 
-.footer-text {
-    margin: 0;
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
+    border-color: #454d55;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-dark.table-striped tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-dark.table-borderless {
+    background-color: transparent;
+}
+
+.table-dark.table-borderless th,
+.table-dark.table-borderless td {
+    border-color: transparent;
+}
+
+.table-active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.bg-secondary.bg-opacity-10 {
+    background-color: rgba(108, 117, 125, 0.1) !important;
+}
+
+/* --- Formulários --- */
+.form-control, .form-select {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: #fff;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #1a1a1a;
+    color: #fff;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+}
+
+/* --- Checkout --- */
+.checkout-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.resumo-pedido {
+    background-color: #030e28;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-checkout {
+    background-color: #030e28;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+/* --- Alertas --- */
+.alert {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.alert-info {
+    background-color: rgba(13, 110, 253, 0.2);
+    border-color: rgba(13, 110, 253, 0.3);
     color: #c7d5e0;
-    font-size: 0.9rem;
 }
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #c7d5e0;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #c7d5e0;
+}
+
+/* --- Botões --- */
+.btn-outline-light {
+    color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.btn-outline-light:hover {
+    color: #212529;
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-primary {
+    color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-success {
+    color: #198754;
+    border-color: #198754;
+}
+
+.btn-outline-success:hover {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:disabled {
+    opacity: 0.65;
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+/* --- Toast --- */
 .toast {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
@@ -360,52 +609,40 @@ body.vendas-page {
     margin-bottom: 5px;
 }
 
-
-
-/* Responsivo */
-@media (max-width: 768px) {
-    .search-outer-container {
-        padding: 15px;
-    }
-    
-    .search-wrapper {
-        width: 100%;
-    }
-    
-    .search-input {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+/* --- Footer --- */
+.site-footer {
+    background-color: #030e28 !important;
+    padding: 20px 0;
+    margin-top: auto; 
+    border-top: 1px solid #030e28;
+    width: 100%;
+    flex-shrink: 0;
 }
 
-/* CARRINHO.PHP */
-body.carrinho   {
-    font-family: 'Arial', sans-serif;
-    background-image: url('/img/background2.jpg');
-    color: #ffffff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-
+.site-footer.checkout-footer {
+    background-color: #030e28 !important;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
-.table-responsive { 
-    background-color: #1b283856;
-    margin: 30px 30px 20px 30px;
- }
-
-.btn-continuar { margin-top: 20px; }
-
-.navbar-carrinho-dark {
-    background-color: #171a21;
-    padding: 15px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+.site-footer .container {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-/* RESPONSIVIDADE */
+.footer-text {
+    margin: 0;
+    color: #c7d5e0;
+    font-size: 0.9rem;
+}
+
+/* --- Ícones --- */
+.bi-cart-x {
+    font-size: 2rem;
+    color: #ffc107;
+}
+
+/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 992px) {
     .game-item {
         flex-direction: column;
@@ -414,7 +651,6 @@ body.carrinho   {
     .game-image-container,
     .game-info {
         width: 100%;
-
     }
     
     .game-info {
@@ -425,12 +661,6 @@ body.carrinho   {
     .giftcard-item {
         flex: 0 0 48%;
         margin-bottom: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .giftcard-item {
-        flex: 0 0 100%;
     }
     
     .navbar-brand {
@@ -443,5 +673,97 @@ body.carrinho   {
     
     .game-price {
         font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .giftcard-item {
+        flex: 0 0 100%;
+    }
+    
+    .search-container {
+        margin-right: auto;
+        max-width: 100%;
+    }
+    
+    .table thead {
+        display: none;
+    }
+    
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #030e28;
+        border-radius: 0.25rem;
+    }
+    
+    .table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid #030e28;
+    }
+    
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 1rem);
+        padding-right: 1rem;
+        text-align: left;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    
+    .table td:nth-of-type(1):before { content: "Produto"; }
+    .table td:nth-of-type(2):before { content: "Preço Unitário"; }
+    .table td:nth-of-type(3):before { content: "Quantidade"; }
+    .table td:nth-of-type(4):before { content: "Subtotal"; }
+    .table td:nth-of-type(5):before { content: "Ação"; }
+    
+    .table td:last-child {
+        border-bottom: 0;
+    }
+    
+    .table tfoot tr {
+        display: table-row;
+    }
+    
+    .table tfoot td {
+        display: table-cell;
+        text-align: right;
+        padding-left: 0.75rem;
+    }
+    
+    .table tfoot td::before {
+        display: none;
+    }
+    
+    .table-responsive {
+        margin: 15px;
+    }
+    
+    .checkout-container {
+        padding: 0 15px;
+        color: #ffffff;
+    }
+    
+    .resumo-pedido,
+    .form-checkout {
+        padding: 1rem;
+        color: #ffffff;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
     }
 }
