@@ -51,107 +51,11 @@ unset($_SESSION['sucesso']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrinho de Compras</title>
-    <link rel="stylesheet" href="./style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        html, body {
-            min-height: 100%;
-            height: auto;
-        }
-        
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        
-        .content-wrapper {
-            flex: 1;
-            padding-bottom: 20px;
-        }
-        
-        .site-footer {
-            flex-shrink: 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background-color: #1a1a1a;
-            margin-top: auto;
-        }
-        
-        .d-none {
-            display: none !important;
-        }
-
-        .shadow-table {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            border-radius: 0.5rem;
-            overflow: hidden; 
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        @media (max-width: 768px) {
-            .table thead {
-                display: none;
-            }
-            
-            .table, .table tbody, .table tr, .table td {
-                display: block;
-                width: 100%;
-            }
-            
-            .table tr {
-                margin-bottom: 1rem;
-                border: 1px solid #dee2e6;
-                border-radius: 0.25rem;
-            }
-            
-            .table td {
-                text-align: right;
-                padding-left: 50%;
-                position: relative;
-                border-bottom: 1px solid #dee2e6;
-            }
-            
-            .table td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 1rem;
-                width: calc(50% - 1rem);
-                padding-right: 1rem;
-                text-align: left;
-                font-weight: bold;
-                white-space: nowrap;
-            }
-            
-            .table td:nth-of-type(1):before { content: "Produto"; }
-            .table td:nth-of-type(2):before { content: "Preço Unitário"; }
-            .table td:nth-of-type(3):before { content: "Quantidade"; }
-            .table td:nth-of-type(4):before { content: "Subtotal"; }
-            .table td:nth-of-type(5):before { content: "Ação"; }
-            
-            .table td:last-child {
-                border-bottom: 0;
-            }
-            
-            .table tfoot tr {
-                display: table-row;
-            }
-            
-            .table tfoot td {
-                display: table-cell;
-                text-align: right;
-                padding-left: 0.75rem;
-            }
-            
-            .table tfoot td::before {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
+<link rel="preload" href="../img/background.jpg" as="image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 </head>
 <body class="carrinho d-flex flex-column">
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -169,7 +73,7 @@ unset($_SESSION['sucesso']);
         </div>
     </nav>
     
-    <div class="table-responsive shadow p-3 mb-5 bg-dark rounded"> 
+    <div class="table-responsive shadow p-3 mb-5 rounded"> 
     <table class="table table-dark table-striped table-hover">
         <thead class="table-secondary">
             <tr>
@@ -231,11 +135,11 @@ unset($_SESSION['sucesso']);
     </table>
 </div>
 
-    <footer class="bg-dark text-white py-4 mt-auto site-footer">
-        <div class="container text-center">
-            <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+<footer class="site-footer">
+    <div class="container-fluid text-center">
+        <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
+    </div>
+</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
