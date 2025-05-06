@@ -37,15 +37,14 @@ $pdo->exec("
     );
 
 
-    CREATE TABLE IF NOT EXISTS pedidos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        usuario_id INTEGER NOT NULL,
-        total REAL NOT NULL,
-        data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
-        status TEXT DEFAULT 'pendente',
-        email_envio TEXT NOT NULL,
-        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-    );
+    CREATE TABLE pedidos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    total REAL NOT NULL,
+    data_pedido TEXT NOT NULL,
+    email_envio TEXT NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
 
 
     CREATE TABLE IF NOT EXISTS itens_pedido (
@@ -81,7 +80,7 @@ $pdo->exec("
         valor_total REAL NOT NULL,
         valor_parcela REAL NOT NULL,
         data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP,
-        referencia_externa TEXT,  -- para armazenar IDs de transações em gateways externos
+        referencia_externa TEXT,
         FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
     );
 
