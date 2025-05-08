@@ -17,24 +17,20 @@ if (isset($_SESSION['usuario'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="home-page">
-    <div class="splash-container">
-        <div class="row g-0 h-100">
+<div class="background-overlay">
+    <div class="main-container">
+        <div class="left-image">
+            <img src="img/cardgame.jpg" alt="Cardgame">
+        </div>
 
-            <div class="col-md-8 game-collage">
-    <div class="game-image">
-        <img src="img/game1.jpg" alt="Jogo" class="img-fluid">
-    </div>
-</div>
-
-            <div class="col-md-4 login-section">
-                <div class="store-title">
-                    <h1>IMPACT STORE</h1>
-                </div>
+        <div class="login-section">
+            <div class="auth-container">
+                <h1>IMPACT STORE</h1>
+                <h3 id="authTitle">Faça seu Login</h3>
                 
-                <div class="auth-container" id="loginContainer">
-                    <h3>Faça seu Login</h3>
-                    <form id="formLogin" method="POST" onsubmit="fazerLogin(event)">
-                        <input type="hidden" name="form_action" value="login">
+                <form id="authForm" method="POST">
+                    <!-- Campos de Login -->
+                    <div id="loginFields">
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                             <input type="email" name="email" placeholder="E-mail" class="form-control" required>
@@ -43,22 +39,13 @@ if (isset($_SESSION['usuario'])) {
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" name="senha" placeholder="Senha" class="form-control" required>
                         </div>
-                        <div id="loginError" class="error-message"></div>
-                        <button type="submit" class="btn btn-primary w-100">ENTRAR</button>
-                    </form>
-                    <p class="text-center mt-3">
-                        Não tem conta? 
-                        <span class="switch-auth" onclick="toggleAuth('cadastro')">Cadastre-se</span>
-                    </p>
-                </div>
-
-                <div class="auth-container" id="cadastroContainer" style="display: none;">
-                    <h3>Faça seu Cadastro</h3>
-                    <form id="formCadastro" method="POST" onsubmit="fazerCadastro(event)">
-                        <input type="hidden" name="form_action" value="cadastro">
+                    </div>
+                    
+                    <!-- Campos de Cadastro -->
+                    <div id="registerFields" style="display:none">
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" name="nome" placeholder="Nome" class="form-control" required>
+                            <input type="text" name="nome" placeholder="Nome Completo" class="form-control" required>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -68,100 +55,101 @@ if (isset($_SESSION['usuario'])) {
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" name="senha" placeholder="Senha" class="form-control" required>
                         </div>
-                        <div id="cadastroError" class="error-message"></div>
-                        <button type="submit" class="btn btn-primary w-100">CADASTRAR</button>
-                    </form>
-                    <p class="text-center mt-3">
-                        Já tem conta? 
-                        <span class="switch-auth" onclick="toggleAuth('login')">Faça login</span>
-                    </p>
-                </div>
+
+                    </div>
+                    
+                    <div id="authError" class="alert alert-danger" style="display: none;"></div>
+                    <button type="submit" id="authButton" class="btn btn-primary w-100">ENTRAR</button>
+                </form>
+                
+                <p class="text-center mt-3">
+                    <span id="authSwitchText">Não tem conta?</span> 
+                    <a href="#" class="switch-auth" id="authSwitchLink">Cadastre-se</a>
+                </p>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let isLogin = true;
     
-    <script>
-        function toggleAuth(type) {
-            if (type === 'login') {
-                document.getElementById('loginContainer').style.display = 'block';
-                document.getElementById('cadastroContainer').style.display = 'none';
-            } else {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('cadastroContainer').style.display = 'block';
+    // Alternar entre login e cadastro
+    document.getElementById('authSwitchLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        isLogin = !isLogin;
+        
+        if (isLogin) {
+            document.getElementById('authTitle').textContent = 'Faça seu Login';
+            document.getElementById('loginFields').style.display = 'block';
+            document.getElementById('registerFields').style.display = 'none';
+            document.getElementById('authButton').textContent = 'ENTRAR';
+            document.getElementById('authSwitchText').textContent = 'Não tem conta?';
+            document.getElementById('authSwitchLink').textContent = 'Cadastre-se';
+        } else {
+            document.getElementById('authTitle').textContent = 'Crie sua Conta';
+            document.getElementById('loginFields').style.display = 'none';
+            document.getElementById('registerFields').style.display = 'block';
+            document.getElementById('authButton').textContent = 'CADASTRAR';
+            document.getElementById('authSwitchText').textContent = 'Já tem conta?';
+            document.getElementById('authSwitchLink').textContent = 'Faça login';
+        }
+    });
+    
+    // Submissão do formulário
+    document.getElementById('authForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const errorElement = document.getElementById('authError');
+        errorElement.style.display = 'none';
+        
+        const formData = new FormData(this);
+        const endpoint = isLogin ? 'server/login.php' : 'server/cadastro.php';
+        
+        fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch {
+                        throw new Error(text || 'Erro desconhecido');
+                    }
+                });
             }
-        }
-
-        function fazerLogin(event) {
-            event.preventDefault();
-            
-            const form = document.getElementById('formLogin');
-            const formData = new FormData(form);
-            const errorElement = document.getElementById('loginError');
-            
-            console.log("Enviando dados de login...");
-            
-            fetch('server/login.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Resposta de rede não ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Resposta recebida:', data);
-                if (data.success) {
-                    console.log('Login bem-sucedido, redirecionando para:', data.redirect);
-                    window.location.href = data.redirect;
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                if (isLogin) {
+                    window.location.href = data.redirect || 'templates/vendas.php';
                 } else {
-                    errorElement.textContent = data.message || 'Erro ao fazer login. Verifique suas credenciais.';
-                    errorElement.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                errorElement.textContent = 'Ocorreu um erro ao processar o login.';
-                errorElement.style.display = 'block';
-            });
-        }
-
-        // Função para cadastro
-        function fazerCadastro(event) {
-            event.preventDefault();
-            
-            const form = document.getElementById('formCadastro');
-            const formData = new FormData(form);
-            const errorElement = document.getElementById('cadastroError');
-            
-            fetch('server/cadastro.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Resposta de rede não ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
                     alert('Cadastro realizado com sucesso! Faça login para continuar.');
-                    toggleAuth('login');
-                } else {
-                    errorElement.textContent = data.message || 'Erro ao fazer cadastro.';
-                    errorElement.style.display = 'block';
+                    // Alternar para login
+                    isLogin = true;
+                    document.getElementById('authTitle').textContent = 'Faça seu Login';
+                    document.getElementById('loginFields').style.display = 'block';
+                    document.getElementById('registerFields').style.display = 'none';
+                    document.getElementById('authButton').textContent = 'ENTRAR';
+                    document.getElementById('authSwitchText').textContent = 'Não tem conta?';
+                    document.getElementById('authSwitchLink').textContent = 'Cadastre-se';
+                    // Limpar formulário
+                    this.reset();
                 }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                errorElement.textContent = 'Ocorreu um erro ao processar o cadastro.';
+            } else {
+                errorElement.textContent = data.message || 'Ocorreu um erro. Tente novamente.';
                 errorElement.style.display = 'block';
-            });
-        }
-    </script>
+            }
+        })
+        .catch(error => {
+            console.error("Erro:", error);
+            errorElement.textContent = 'Erro na conexão: ' + error.message;
+            errorElement.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>
