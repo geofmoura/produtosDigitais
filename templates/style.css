@@ -30,11 +30,6 @@ body {
 
 /* ===== ESTILOS ESPECÍFICOS POR PÁGINA ===== */
 
-/* --- Home Page --- */
-body.home-page {
-    background-color: #030e28;
-}
-
 /* --- Vendas Page --- */
 body.vendas-page {
     background-image: url('/img/background2.jpg');
@@ -765,5 +760,160 @@ body.checkout-page {
     
     .btn {
         width: 100%;
+    }
+}
+
+/* ===== PÁGINA DE LOGIN ===== */
+.splash-container {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.splash-container .row {
+    height: 100%;
+}
+
+.game-collage {
+    position: relative;
+    background-image: url(/img/cardgame.jpg);
+    display: flex;
+}
+
+.game-image img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.login-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-image: url(/img/background2.jpg);
+    position: relative;
+    z-index: 2;
+}
+
+.store-title {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.store-title h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: rgba(3, 14, 40, 0.422);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(35, 35, 35, 0.1);
+}
+
+.auth-container h3 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.input-group-text {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: #66c0f4;
+}
+
+.form-control {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: #ffffff;
+}
+
+.form-control:focus {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #66c0f4;
+    box-shadow: 0 0 0 0.25rem rgba(102, 192, 244, 0.25);
+}
+
+.btn-primary {
+    background-color: #030e28;
+    border-color: #030e28;
+    color: #030e28;
+    font-weight: bold;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #030e28;
+    border-color: #030e28;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.text-center {
+    color: #c7d5e0;
+    font-size: 0.9rem;
+}
+
+.switch-auth {
+    color: #66c0f4;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.switch-auth:hover {
+    color: #4fb0e4;
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .game-collage {
+        display: none;
+    }
+    
+    .login-section {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .auth-container {
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 576px) {
+    .store-title h1 {
+        font-size: 2.2rem;
+    }
+    
+    .auth-container {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-height: 800px) {
+    .game-image img {
+        max-height: 80vh;
     }
 }
