@@ -5,82 +5,64 @@ header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$log = ['status' => 'iniciando', 'dados' => []];
+$response = ['success' => false, 'message' => ''];
 
 try {
-    $dbPath = __DIR__ . '/../db/database.sqlite';
-    $log['database_path'] = $dbPath;
-    
-    if (!file_exists($dbPath)) {
-        $log['erro'] = 'Arquivo do banco de dados não encontrado';
-        echo json_encode(['success' => false, 'message' => 'Arquivo de banco de dados não encontrado', 'log' => $log]);
+    $required = ['nome', 'email', 'senha', 'confirmar_senha'];
+    foreach ($required as $field) {
+        if (empty($_POST[$field])) {
+            $response['message'] = 'Todos os campos são obrigatórios';
+            echo json_encode($response);
+            exit();
+        }
+    }
+
+    if ($_POST['senha'] !== $_POST['confirmar_senha']) {
+        $response['message'] = 'As senhas não coincidem';
+        echo json_encode($response);
         exit();
     }
+
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
+
+    $dbPath = __DIR__ . '/../../db/database.sqlite';
+    $dbDir = dirname($dbPath);
     
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0755, true);
+    }
+
     $pdo = new PDO('sqlite:' . $dbPath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $log['database_connection'] = 'conectado';
-    
-    $stmt = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='usuarios'");
-    if (!$stmt->fetch()) {
-        $pdo->exec("CREATE TABLE usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            senha TEXT NOT NULL,
-            data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
-        )");
-        $log['table_created'] = true;
-    } else {
-        $log['table_exists'] = true;
-    }
-} catch (PDOException $e) {
-    $log['erro_db'] = $e->getMessage();
-    echo json_encode(['success' => false, 'message' => 'Erro de conexão com o banco de dados: ' . $e->getMessage(), 'log' => $log]);
-    exit();
-}
 
-$nome =  $_POST['nome'] ?? '';
-$email = $_POST['email'] ?? '';
-$senha = $_POST['senha'] ?? '';
+    $pdo->exec("CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        senha TEXT NOT NULL,
+        data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+    )");
 
-$log['dados'] = ['nome' => $nome, 'email' => $email, 'senha' => $senha];
-
-if (empty($nome) || empty($email) || empty($senha)) {
-    $log['validation'] = 'campos vazios';
-    echo json_encode(['success' => false, 'message' => 'Todos os campos são obrigatórios', 'log' => $log]);
-    exit();
-}
-
-try {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
-    $emailExiste = (bool)$stmt->fetchColumn();
-    $log['email_exists'] = $emailExiste;
-
-    if ($emailExiste) {
-        echo json_encode(['success' => false, 'message' => 'Este email já está cadastrado', 'log' => $log]);
+    if ($stmt->fetchColumn() > 0) {
+        $response['message'] = 'Este email já está cadastrado';
+        echo json_encode($response);
         exit();
     }
-} catch (PDOException $e) {
-    $log['erro_verificar_email'] = $e->getMessage();
-    echo json_encode(['success' => false, 'message' => 'Erro ao verificar email: ' . $e->getMessage(), 'log' => $log]);
-    exit();
-}
 
-try {
     $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
-    $result = $stmt->execute([$nome, $email, $senha]); 
-    $log['insert_result'] = $result;
-    $log['user_id'] = $pdo->lastInsertId();
-    
-    if ($result) {
-        echo json_encode(['success' => true, 'message' => 'Usuário cadastrado com sucesso!', 'log' => $log]);
+    if ($stmt->execute([$nome, $email, $senha])) {
+        $response['success'] = true;
+        $response['message'] = 'Cadastro realizado com sucesso!';
     } else {
-        echo json_encode(['success' => false, 'message' => 'Falha ao inserir usuário', 'log' => $log]);
+        $response['message'] = 'Erro ao cadastrar usuário';
     }
 } catch (PDOException $e) {
-    $log['erro_inserir'] = $e->getMessage();
-    echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar: ' . $e->getMessage(), 'log' => $log]);
+    $response['message'] = 'Erro no sistema: ' . $e->getMessage();
 }
+
+echo json_encode($response);
 ?>
