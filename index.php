@@ -14,52 +14,66 @@ if (isset($_SESSION['usuario'])) {
     <title>Impact Store</title>
     <link rel="stylesheet" href="templates/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="home-page">
+    <div class="splash-container">
+        <div class="row g-0 h-100">
 
-    <!-- Modal de Login  -->
-    <div class="modal fade" id="myModalLogin" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Faça seu Login</h5>
+            <div class="col-md-8 game-collage">
+    <div class="game-image">
+        <img src="img/game1.jpg" alt="Jogo" class="img-fluid">
+    </div>
+</div>
+
+            <div class="col-md-4 login-section">
+                <div class="store-title">
+                    <h1>IMPACT STORE</h1>
                 </div>
-                <div class="modal-body">
+                
+                <div class="auth-container" id="loginContainer">
+                    <h3>Faça seu Login</h3>
                     <form id="formLogin" method="POST" onsubmit="fazerLogin(event)">
                         <input type="hidden" name="form_action" value="login">
-                        <input type="email" name="email" placeholder="E-mail" class="form-control mb-3" required>
-                        <input type="password" name="senha" placeholder="Senha" class="form-control mb-3" required>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="senha" placeholder="Senha" class="form-control" required>
+                        </div>
                         <div id="loginError" class="error-message"></div>
-                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                        <button type="submit" class="btn btn-primary w-100">ENTRAR</button>
                     </form>
                     <p class="text-center mt-3">
                         Não tem conta? 
-                        <span class="switch-modal" onclick="switchToCadastro()">Clique aqui para cadastrar</span>
+                        <span class="switch-auth" onclick="toggleAuth('cadastro')">Cadastre-se</span>
                     </p>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal de Cadastro  -->
-    <div class="modal fade" id="myModalCadastro" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Faça seu Cadastro</h5>
-                </div>
-                <div class="modal-body">
+                <div class="auth-container" id="cadastroContainer" style="display: none;">
+                    <h3>Faça seu Cadastro</h3>
                     <form id="formCadastro" method="POST" onsubmit="fazerCadastro(event)">
                         <input type="hidden" name="form_action" value="cadastro">
-                        <input type="text" name="nome" placeholder="Nome" class="form-control mb-3" required>
-                        <input type="email" name="email" placeholder="E-mail" class="form-control mb-3" required>
-                        <input type="password" name="senha" placeholder="Senha" class="form-control mb-3" required>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" name="nome" placeholder="Nome" class="form-control" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="senha" placeholder="Senha" class="form-control" required>
+                        </div>
                         <div id="cadastroError" class="error-message"></div>
-                        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+                        <button type="submit" class="btn btn-primary w-100">CADASTRAR</button>
                     </form>
                     <p class="text-center mt-3">
                         Já tem conta? 
-                        <span class="switch-modal" onclick="switchToLogin()">Clique aqui para entrar</span>
+                        <span class="switch-auth" onclick="toggleAuth('login')">Faça login</span>
                     </p>
                 </div>
             </div>
@@ -69,21 +83,14 @@ if (isset($_SESSION['usuario'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        setTimeout(() => {
-            const loginModal = new bootstrap.Modal(document.getElementById('myModalLogin'), {
-                backdrop: 'static'
-            });
-            loginModal.show();
-        }, 500);
-
-        function switchToCadastro() {
-            bootstrap.Modal.getInstance(document.getElementById('myModalLogin')).hide();
-            new bootstrap.Modal(document.getElementById('myModalCadastro')).show();
-        }
-
-        function switchToLogin() {
-            bootstrap.Modal.getInstance(document.getElementById('myModalCadastro')).hide();
-            new bootstrap.Modal(document.getElementById('myModalLogin')).show();
+        function toggleAuth(type) {
+            if (type === 'login') {
+                document.getElementById('loginContainer').style.display = 'block';
+                document.getElementById('cadastroContainer').style.display = 'none';
+            } else {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('cadastroContainer').style.display = 'block';
+            }
         }
 
         function fazerLogin(event) {
@@ -143,7 +150,7 @@ if (isset($_SESSION['usuario'])) {
             .then(data => {
                 if (data.success) {
                     alert('Cadastro realizado com sucesso! Faça login para continuar.');
-                    switchToLogin();
+                    toggleAuth('login');
                 } else {
                     errorElement.textContent = data.message || 'Erro ao fazer cadastro.';
                     errorElement.style.display = 'block';
