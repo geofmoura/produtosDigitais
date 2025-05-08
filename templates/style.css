@@ -764,38 +764,80 @@ body.checkout-page {
 }
 
 /* ===== PÁGINA DE LOGIN ===== */
-.splash-container {
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('/img/background2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+}
+
+.background-overlay {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    display: flex;
     height: 100vh;
     width: 100%;
+}
+
+.left-image {
+    flex: 1;
     overflow: hidden;
 }
 
-.splash-container .row {
+.left-image img {
     height: 100%;
-}
-
-.game-collage {
-    position: relative;
-    background-image: url(/img/cardgame.jpg);
-    display: flex;
-}
-
-.game-image img {
     width: 100%;
-    max-width: 100%;
-    height: auto;
     object-fit: cover;
+    display: block;
 }
 
+/* Seção de login */
 .login-section {
+    flex: 1;
+    padding: 3rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
-    background-image: url(/img/background2.jpg);
-    position: relative;
-    z-index: 2;
+    
+}
+
+.login-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    margin-top: -3rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.login-section form {
+    width: 100%;
+    max-width: 320px;
+}
+
+.login-section h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.switch-auth {
+    color: #0d6efd;
+    cursor: pointer;
 }
 
 .store-title {
@@ -814,11 +856,9 @@ body.checkout-page {
 .auth-container {
     width: 100%;
     max-width: 400px;
-    background-color: rgba(3, 14, 40, 0.422);
+    background-color: transparent !important;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(35, 35, 35, 0.1);
 }
 
 .auth-container h3 {
