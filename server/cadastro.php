@@ -27,23 +27,8 @@ try {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    $dbPath = __DIR__ . '/../../db/database.sqlite';
-    $dbDir = dirname($dbPath);
-    
-    if (!is_dir($dbDir)) {
-        mkdir($dbDir, 0755, true);
-    }
-
-    $pdo = new PDO('sqlite:' . $dbPath);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $pdo->exec("CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        senha TEXT NOT NULL,
-        data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
-    )");
+    require_once __DIR__ . '/../config/database.php';
+    $pdo = conectarBD();
 
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
@@ -65,4 +50,3 @@ try {
 }
 
 echo json_encode($response);
-?>
