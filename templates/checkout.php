@@ -6,7 +6,16 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-$nome_usuario = $_SESSION['usuario'] ?? 'Visitante';
+if (isset($_SESSION['usuario']['nome'])) {
+    $nome_usuario = $_SESSION['usuario']['nome'];
+} elseif (isset($_SESSION['usuario_nome'])) {
+    $nome_usuario = $_SESSION['usuario_nome'];
+} elseif (is_array($_SESSION['usuario'])) {
+    $nome_usuario = $_SESSION['usuario']['nome'] ?? 'Visitante';
+} else {
+    $nome_usuario = $_SESSION['usuario'] ?? 'Visitante';
+}
+
 $rootDir = dirname(__DIR__);
 $dbPath = $rootDir . '/db/database.sqlite';
 
@@ -25,12 +34,10 @@ $carrinho = $_SESSION['carrinho'] ?? [];
 $exibirCarrinhoVazio = empty($carrinho);
 $total = 0;
 
-// Calcular total
 foreach ($carrinho as $item) {
     $total += $item['preco'] * $item['quantidade'];
 }
 
-// Processar finalização da compra
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
     $transactionStarted = false;
     try {
@@ -64,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
                     ->execute([$pedido_id, $item['id'], $codigo]);
             }
         }
-        
 
         $pdo->commit();
         $transactionStarted = false;
@@ -108,7 +114,7 @@ function generateRandomCode($length = 16) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="checkout-page vendas-page d-flex flex-column">
-<nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">Impact Store</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -116,7 +122,7 @@ function generateRandomCode($length = 16) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="d-flex ms-auto align-items-center user-section">
-                    <span class="me-3 user-greeting">Olá, <?php echo $nome_usuario; ?>!</span>
+                    <span class="me-3 user-greeting">Olá, <?php echo htmlspecialchars($nome_usuario); ?>!</span>
                     <a href="../server/logout.php" class="btn btn-outline-light logout-btn">Sair</a>
                 </div>
             </div>
@@ -128,7 +134,7 @@ function generateRandomCode($length = 16) {
             <h1 class="mb-4"><i class="bi bi-credit-card"></i> Finalizar Compra</h1>
             
             <?php if (isset($erro)): ?>
-                <div class="alert alert-danger"><?= $erro ?></div>
+                <div class="alert alert-danger"><?= htmlspecialchars($erro) ?></div>
             <?php endif; ?>
             
             <?php if ($exibirCarrinhoVazio): ?>
@@ -173,7 +179,7 @@ function generateRandomCode($length = 16) {
                         <div class="mb-3">
                             <label for="email" class="form-label">Email para recebimento</label>
                             <input type="email" class="form-control" id="email" name="email" required
-                                   value="<?= $_SESSION['usuario_email'] ?? '' ?>">
+                                   value="<?= htmlspecialchars($_SESSION['usuario_email'] ?? '') ?>">
                             <div class="form-text">Os códigos e links de download serão enviados para este email</div>
                         </div>
                         
@@ -224,10 +230,10 @@ function generateRandomCode($length = 16) {
     </div>
     
     <footer class="site-footer">
-    <div class="container-fluid text-center">
-        <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
-    </div>
-</footer>
+        <div class="container-fluid text-center">
+            <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
