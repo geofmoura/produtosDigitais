@@ -2,14 +2,27 @@
 session_start();
 error_log('Vendas.php - SESSION: ' . print_r($_SESSION, true));
 
+// Redireciona se o usuário não estiver logado
 if (!isset($_SESSION['usuario'])) {
     error_log('Usuário não logado, redirecionando para index.php');
     header('Location: ../index.php'); 
     exit();
 }
 
-$nome_usuario = htmlspecialchars($_SESSION['usuario']);
+// Tratamento seguro para o nome do usuário (array ou string)
+if (is_array($_SESSION['usuario'])) {
+    // Se for array, pega o campo 'nome' ou 'username' (ajuste conforme sua aplicação)
+    $nome_usuario = isset($_SESSION['usuario']['nome']) 
+        ? htmlspecialchars($_SESSION['usuario']['nome']) 
+        : (isset($_SESSION['usuario']['username']) 
+            ? htmlspecialchars($_SESSION['usuario']['username']) 
+            : 'Usuário');
+} else {
+    // Se for string, usa diretamente
+    $nome_usuario = htmlspecialchars($_SESSION['usuario']);
+}
 
+// Conexão com o banco de dados SQLite
 try {
     $pdo = new PDO('sqlite:' . __DIR__ . '/../db/database.sqlite'); 
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -17,14 +30,19 @@ try {
     die('Erro de conexão: ' . $e->getMessage());
 }
 
+// Busca jogos no banco de dados
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'jogo'");
 $stmt->execute();
 $jogos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Busca gift cards no banco de dados
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'gift_card'");
 $stmt->execute();
 $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+/**
+ * Função para mapear nomes de produtos para imagens
+ */
 function gerarNomeImagem($nomeProduto) {
     $mapeamento = [
         'Resident Evil 4' => 'residentevil4.jpg',
@@ -69,7 +87,6 @@ function gerarNomeImagem($nomeProduto) {
     <link rel="preload" href="../img/background.jpg" as="image">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="stylesheet" href="style.css"> 
-
 </head>
 <body class="vendas-page">
     <!-- Navbar -->
@@ -215,230 +232,230 @@ function gerarNomeImagem($nomeProduto) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
-    
-    buyForms.forEach(form => {
-        form.addEventListener('submit', async function (event) {
-            event.preventDefault();
+        const buyForms = document.querySelectorAll('form[action*="adicionar_carrinho"]');
+        
+        buyForms.forEach(form => {
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        showToast(result.message, result.productName);
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao adicionar o produto ao carrinho');
+                }
+            });
+        });
+
+        function showToast(message, productName) {
+            let toastContainer = document.getElementById('toast-container');
             
-            try {
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.style.position = 'fixed';
+                toastContainer.style.top = '20px';
+                toastContainer.style.right = '20px';
+                toastContainer.style.zIndex = '9999';
+                document.body.appendChild(toastContainer);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast show';
+            toast.style.backgroundColor = '#28a745';
+            toast.style.color = 'white';
+            toast.style.borderRadius = '5px';
+            toast.style.padding = '15px';
+            toast.style.marginBottom = '10px';
+            toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.justifyContent = 'space-between';
+            toast.style.minWidth = '350px';
+            toast.style.maxWidth = '400px';
+            toast.style.transition = 'all 0.3s ease';
+
+            const toastContent = document.createElement('div');
+            toastContent.style.flexGrow = '1';
+            toastContent.innerHTML = `
+                <strong>${productName}</strong> - ${message}
+            `;
+            toast.appendChild(toastContent);
+
+            const cartButton = document.createElement('button');
+            cartButton.innerHTML = '<i class="bi bi-cart"></i> Ver Carrinho';
+            cartButton.style.marginLeft = '15px';
+            cartButton.style.padding = '5px 10px';
+            cartButton.style.border = 'none';
+            cartButton.style.borderRadius = '4px';
+            cartButton.style.backgroundColor = '#ffffff';
+            cartButton.style.color = '#28a745';
+            cartButton.style.cursor = 'pointer';
+            cartButton.style.fontWeight = 'bold';
+            cartButton.addEventListener('click', () => {
+                window.location.href = 'carrinho.php';
+            });
+            toast.appendChild(cartButton);
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        function formatPrice(price) {
+            return 'R$ ' + parseFloat(price).toFixed(2).replace('.', ',');
+        }
+
+        const allProducts = [
+            <?php 
+            foreach ($jogos as $jogo): 
+                echo "{
+                    id: {$jogo['id']},
+                    nome: '" . addslashes($jogo['nome']) . "',
+                    tipo: 'jogo',
+                    preco: {$jogo['preco']},
+                    promocao: " . ($jogo['promocao'] ? $jogo['promocao'] : 'null') . ",
+                    descricao: '" . addslashes($jogo['descricao']) . "'
+                },";
+            endforeach; 
+            foreach ($giftcards as $giftcard): 
+                echo "{
+                    id: {$giftcard['id']},
+                    nome: '" . addslashes($giftcard['nome']) . "',
+                    tipo: 'gift_card',
+                    preco: {$giftcard['preco']},
+                    promocao: " . ($giftcard['promocao'] ? $giftcard['promocao'] : 'null') . ",
+                    descricao: '" . addslashes($giftcard['descricao']) . "'
+                },";
+            endforeach; 
+            ?>
+        ];
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm.length < 2) {
+                searchResults.innerHTML = '';
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const filteredProducts = allProducts.filter(product => 
+                product.nome.toLowerCase().includes(searchTerm)
+            ).slice(0, 8);
+            
+            displaySearchResults(filteredProducts);
+        });
+        
+        function displaySearchResults(products) {
+            searchResults.innerHTML = '';
+            
+            if (products.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">Nenhum produto encontrado</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            
+            products.forEach(product => {
+                const priceToShow = product.promocao && product.promocao !== null ? 
+                    product.promocao : product.preco;
+                
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+                resultItem.innerHTML = `
+                    <div>
+                        <strong>${product.nome}</strong>
+                        <span class="type">${product.tipo === 'jogo' ? 'Jogo' : 'Gift Card'}</span>
+                    </div>
+                    <div class="price">${formatPrice(priceToShow)}</div>
+                `;
+                
+                resultItem.addEventListener('click', () => {
+                    if (product.tipo === 'jogo') {
+                        const carousel = bootstrap.Carousel.getOrCreateInstance('#gameCarousel');
+                        const carouselItems = document.querySelectorAll('#gameCarousel .carousel-item');
+                        let foundIndex = -1;
+                        
+                        carouselItems.forEach((item, index) => {
+                            const itemName = item.querySelector('.game-title').textContent;
+                            if (itemName === product.nome) {
+                                foundIndex = index;
+                            }
+                        });
+                        
+                        if (foundIndex >= 0) {
+                            carousel.to(foundIndex);
+                            
+                            carouselItems[foundIndex].classList.add('highlight-search-result');
+                            setTimeout(() => {
+                                carouselItems[foundIndex].classList.remove('highlight-search-result');
+                            }, 8000);
+                            
+                            const carouselElement = document.querySelector('.game-carousel');
+                            const yOffset = -100;
+                            const y = carouselElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            window.scrollTo({top: y, behavior: 'smooth'});
+                        }
+                    } else {
+                        document.getElementById('giftcards-section').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+
+                        const giftCardElements = document.querySelectorAll('.giftcard-item');
+                        giftCardElements.forEach(element => {
+                            const cardName = element.querySelector('.game-title').textContent;
+                            if (cardName === product.nome) {
+                                element.style.boxShadow = '0 0 0 3px rgba(13, 110, 253, 0.5)';
+                                setTimeout(() => {
+                                    element.style.boxShadow = '';
+                                }, 2000);
+                            }
+                        });
+                    }
+                    
+                    searchResults.style.display = 'none';
+                    searchInput.value = product.nome;
                 });
                 
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    showToast(result.message, result.productName);
-                } else {
-                    alert(result.message);
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Ocorreu um erro ao adicionar o produto ao carrinho');
-            }
-        });
-    });
-
-    function showToast(message, productName) {
-        let toastContainer = document.getElementById('toast-container');
-        
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'toast-container';
-            toastContainer.style.position = 'fixed';
-            toastContainer.style.top = '20px';
-            toastContainer.style.right = '20px';
-            toastContainer.style.zIndex = '9999';
-            document.body.appendChild(toastContainer);
-        }
-
-        const toast = document.createElement('div');
-        toast.className = 'toast show';
-        toast.style.backgroundColor = '#28a745';
-        toast.style.color = 'white';
-        toast.style.borderRadius = '5px';
-        toast.style.padding = '15px';
-        toast.style.marginBottom = '10px';
-        toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-        toast.style.display = 'flex';
-        toast.style.alignItems = 'center';
-        toast.style.justifyContent = 'space-between';
-        toast.style.minWidth = '350px';
-        toast.style.maxWidth = '400px';
-        toast.style.transition = 'all 0.3s ease';
-
-        const toastContent = document.createElement('div');
-        toastContent.style.flexGrow = '1';
-        toastContent.innerHTML = `
-            <strong>${productName}</strong> - ${message}
-        `;
-        toast.appendChild(toastContent);
-
-        const cartButton = document.createElement('button');
-        cartButton.innerHTML = '<i class="bi bi-cart"></i> Ver Carrinho';
-        cartButton.style.marginLeft = '15px';
-        cartButton.style.padding = '5px 10px';
-        cartButton.style.border = 'none';
-        cartButton.style.borderRadius = '4px';
-        cartButton.style.backgroundColor = '#ffffff';
-        cartButton.style.color = '#28a745';
-        cartButton.style.cursor = 'pointer';
-        cartButton.style.fontWeight = 'bold';
-        cartButton.addEventListener('click', () => {
-            window.location.href = 'carrinho.php';
-        });
-        toast.appendChild(cartButton);
-
-        toastContainer.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 5000);
-    }
-
-    const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
-
-    function formatPrice(price) {
-        return 'R$ ' + parseFloat(price).toFixed(2).replace('.', ',');
-    }
-
-    const allProducts = [
-        <?php 
-        foreach ($jogos as $jogo): 
-            echo "{
-                id: {$jogo['id']},
-                nome: '" . addslashes($jogo['nome']) . "',
-                tipo: 'jogo',
-                preco: {$jogo['preco']},
-                promocao: " . ($jogo['promocao'] ? $jogo['promocao'] : 'null') . ",
-                descricao: '" . addslashes($jogo['descricao']) . "'
-            },";
-        endforeach; 
-        foreach ($giftcards as $giftcard): 
-            echo "{
-                id: {$giftcard['id']},
-                nome: '" . addslashes($giftcard['nome']) . "',
-                tipo: 'gift_card',
-                preco: {$giftcard['preco']},
-                promocao: " . ($giftcard['promocao'] ? $giftcard['promocao'] : 'null') . ",
-                descricao: '" . addslashes($giftcard['descricao']) . "'
-            },";
-        endforeach; 
-        ?>
-    ];
-    
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase().trim();
-        
-        if (searchTerm.length < 2) {
-            searchResults.innerHTML = '';
-            searchResults.style.display = 'none';
-            return;
-        }
-        
-        const filteredProducts = allProducts.filter(product => 
-            product.nome.toLowerCase().includes(searchTerm)
-        ).slice(0, 8);
-        
-        displaySearchResults(filteredProducts);
-    });
-    
-    function displaySearchResults(products) {
-        searchResults.innerHTML = '';
-        
-        if (products.length === 0) {
-            searchResults.innerHTML = '<div class="no-results">Nenhum produto encontrado</div>';
-            searchResults.style.display = 'block';
-            return;
-        }
-        
-        products.forEach(product => {
-            const priceToShow = product.promocao && product.promocao !== null ? 
-                product.promocao : product.preco;
-            
-            const resultItem = document.createElement('div');
-            resultItem.className = 'search-result-item';
-            resultItem.innerHTML = `
-                <div>
-                    <strong>${product.nome}</strong>
-                    <span class="type">${product.tipo === 'jogo' ? 'Jogo' : 'Gift Card'}</span>
-                </div>
-                <div class="price">${formatPrice(priceToShow)}</div>
-            `;
-            
-            resultItem.addEventListener('click', () => {
-                if (product.tipo === 'jogo') {
-                    const carousel = bootstrap.Carousel.getOrCreateInstance('#gameCarousel');
-                    const carouselItems = document.querySelectorAll('#gameCarousel .carousel-item');
-                    let foundIndex = -1;
-                    
-                    carouselItems.forEach((item, index) => {
-                        const itemName = item.querySelector('.game-title').textContent;
-                        if (itemName === product.nome) {
-                            foundIndex = index;
-                        }
-                    });
-                    
-                    if (foundIndex >= 0) {
-                        carousel.to(foundIndex);
-                        
-                        carouselItems[foundIndex].classList.add('highlight-search-result');
-                        setTimeout(() => {
-                            carouselItems[foundIndex].classList.remove('highlight-search-result');
-                        }, 8000);
-                        
-                        const carouselElement = document.querySelector('.game-carousel');
-                        const yOffset = -100;
-                        const y = carouselElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                        window.scrollTo({top: y, behavior: 'smooth'});
-                    }
-                } else {
-                    document.getElementById('giftcards-section').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-
-                    const giftCardElements = document.querySelectorAll('.giftcard-item');
-                    giftCardElements.forEach(element => {
-                        const cardName = element.querySelector('.game-title').textContent;
-                        if (cardName === product.nome) {
-                            element.style.boxShadow = '0 0 0 3px rgba(13, 110, 253, 0.5)';
-                            setTimeout(() => {
-                                element.style.boxShadow = '';
-                            }, 2000);
-                        }
-                    });
-                }
-                
-                searchResults.style.display = 'none';
-                searchInput.value = product.nome;
+                searchResults.appendChild(resultItem);
             });
             
-            searchResults.appendChild(resultItem);
+            searchResults.style.display = 'block';
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
         });
         
-        searchResults.style.display = 'block';
-    }
-    
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.style.display = 'none';
-        }
-    });
-    
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && searchResults.style.display === 'block') {
-            const firstResult = searchResults.querySelector('.search-result-item');
-            if (firstResult) {
-                firstResult.click();
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && searchResults.style.display === 'block') {
+                const firstResult = searchResults.querySelector('.search-result-item');
+                if (firstResult) {
+                    firstResult.click();
+                }
             }
-        }
+        });
     });
-});
-</script>
+    </script>
 </body>
 </html>
