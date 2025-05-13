@@ -28,39 +28,43 @@ if (isset($_SESSION['usuario'])) {
                 <h1>IMPACT STORE</h1>
                 <h3 id="authTitle">Faça seu Login</h3>
                 
-                <form id="authForm" method="POST">
-                    <!-- Campos de Login -->
-                    <div id="loginFields">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" name="senha" placeholder="Senha" class="form-control" required>
-                        </div>
-                    </div>
-                    
-                    <!-- Campos de Cadastro -->
-                    <div id="registerFields" style="display:none">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" name="nome" placeholder="Nome Completo" class="form-control" required>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" name="senha" placeholder="Senha" class="form-control" required>
-                        </div>
+    <form id="authForm" method="POST">
+        <!-- Campos de Login -->
+        <div id="loginFields">
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" id="loginEmail" name="email" placeholder="E-mail" class="form-control" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="loginSenha" name="senha" placeholder="Senha" class="form-control" required>
+            </div>
+        </div>
 
-                    </div>
-                    
-                    <div id="authError" class="alert alert-danger" style="display: none;"></div>
-                    <button type="submit" id="authButton" class="btn btn-primary w-100">ENTRAR</button>
-                </form>
+        <!-- Campos de Cadastro -->
+        <div id="registerFields" style="display:none">
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" id="cadastroNome" name="nome" placeholder="Nome Completo" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" id="cadastroEmail" name="email" placeholder="E-mail" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="cadastroSenha" name="senha" placeholder="Senha" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="confirmarSenha" name="confirmar_senha" placeholder="Confirmar Senha" class="form-control">
+            </div>
+        </div>
+
+        <div id="authError" class="alert alert-danger" style="display: none;"></div>
+        <button type="submit" id="authButton" class="btn btn-primary w-100">ENTRAR</button>
+    </form>
+
                 
                 <p class="text-center mt-3">
                     <span id="authSwitchText">Não tem conta?</span> 
@@ -74,12 +78,12 @@ if (isset($_SESSION['usuario'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let isLogin = true;
-    
+
     // Alternar entre login e cadastro
-    document.getElementById('authSwitchLink').addEventListener('click', function(e) {
+    document.getElementById('authSwitchLink').addEventListener('click', function (e) {
         e.preventDefault();
         isLogin = !isLogin;
-        
+
         if (isLogin) {
             document.getElementById('authTitle').textContent = 'Faça seu Login';
             document.getElementById('loginFields').style.display = 'block';
@@ -96,23 +100,43 @@ if (isset($_SESSION['usuario'])) {
             document.getElementById('authSwitchLink').textContent = 'Faça login';
         }
     });
-    
+
     // Submissão do formulário
-    document.getElementById('authForm').addEventListener('submit', function(event) {
+    document.getElementById('authForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const errorElement = document.getElementById('authError');
         errorElement.style.display = 'none';
-        
+
+        // Desabilitar todos os inputs primeiro
+        document.querySelectorAll('#authForm input').forEach(input => {
+            input.disabled = true;
+        });
+
+        // Reabilitar apenas os inputs do modo atual (login ou cadastro)
+        if (isLogin) {
+            document.querySelectorAll('#loginFields input').forEach(input => input.disabled = false);
+        } else {
+            document.querySelectorAll('#registerFields input').forEach(input => input.disabled = false);
+        }
+
+        // Criar o FormData com os campos visíveis
         const formData = new FormData(this);
         const endpoint = isLogin ? 'server/login.php' : 'server/cadastro.php';
-        
+
+        console.log('Enviando requisição para:', endpoint);
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
         fetch(endpoint, {
             method: 'POST',
             body: formData
         })
         .then(response => {
+            console.log('Status da resposta:', response.status);
             if (!response.ok) {
                 return response.text().then(text => {
+                    console.log('Texto da resposta:', text);
                     try {
                         return JSON.parse(text);
                     } catch {
@@ -123,12 +147,12 @@ if (isset($_SESSION['usuario'])) {
             return response.json();
         })
         .then(data => {
+            console.log('Dados recebidos:', data);
             if (data.success) {
                 if (isLogin) {
                     window.location.href = data.redirect || 'templates/vendas.php';
                 } else {
                     alert('Cadastro realizado com sucesso! Faça login para continuar.');
-                    // Alternar para login
                     isLogin = true;
                     document.getElementById('authTitle').textContent = 'Faça seu Login';
                     document.getElementById('loginFields').style.display = 'block';
@@ -136,7 +160,6 @@ if (isset($_SESSION['usuario'])) {
                     document.getElementById('authButton').textContent = 'ENTRAR';
                     document.getElementById('authSwitchText').textContent = 'Não tem conta?';
                     document.getElementById('authSwitchLink').textContent = 'Cadastre-se';
-                    // Limpar formulário
                     this.reset();
                 }
             } else {
@@ -151,5 +174,6 @@ if (isset($_SESSION['usuario'])) {
         });
     });
 </script>
+
 </body>
 </html>
