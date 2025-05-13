@@ -17,16 +17,8 @@ try {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    $dbPath = __DIR__ . '/../../db/database.sqlite';
-    
-    if (!file_exists($dbPath)) {
-        $response['message'] = 'Banco de dados não encontrado';
-        echo json_encode($response);
-        exit();
-    }
-
-    $pdo = new PDO('sqlite:' . $dbPath);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    require_once __DIR__ . '/../config/database.php';
+    $pdo = conectarBD();
 
     $stmt = $pdo->prepare("SELECT id, nome, email, senha FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
@@ -51,4 +43,3 @@ try {
 }
 
 echo json_encode($response);
-?>
