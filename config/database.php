@@ -1,22 +1,17 @@
 <?php
-// Arquivo config/database.php - modificado para usar sua estrutura
 
 function conectarBD() {
-    // Caminho absoluto para o banco de dados
     $dbPath = __DIR__ . '/../db/database.sqlite';
     
-    // Verificar se o diretório db existe
     $dbDir = dirname($dbPath);
     if (!is_dir($dbDir)) {
         mkdir($dbDir, 0755, true);
     }
 
     try {
-        // Conectar ao banco
         $pdo = new PDO('sqlite:' . $dbPath);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        // Criar tabelas se não existirem
         criarTabelas($pdo);
         
         return $pdo;

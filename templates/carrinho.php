@@ -38,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remover'])) {
             if ($item['id'] == $produtoId) {
                 unset($_SESSION['carrinho'][$key]);
                 $_SESSION['carrinho'] = array_values($_SESSION['carrinho']);
-                $_SESSION['sucesso'] = "O produto \"".htmlspecialchars($item['nome'])."\" foi removido do carrinho";
                 break;
             }
         }
