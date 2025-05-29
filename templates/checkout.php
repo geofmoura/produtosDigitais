@@ -2,8 +2,9 @@
 session_start();
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../index.php');
+    echo 'ok';
     exit();
+
 }
 
 if (isset($_SESSION['usuario']['nome'])) {
@@ -41,10 +42,11 @@ foreach ($carrinho as $item) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
     $transactionStarted = false;
     try {
-        if (!isset($_SESSION['usuario_id'])) {
+        $usuario_id = $_SESSION['usuario_id'] ?? ($_SESSION['usuario']['id'] ?? null);
+        if (!$usuario_id) {
             throw new Exception("Usuário não identificado. Faça login novamente.");
         }
-        
+
         if (empty($_POST['email'])) {
             throw new Exception("Email para envio é obrigatório.");
         }
@@ -54,18 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
 
         $stmt = $pdo->prepare("INSERT INTO pedidos (usuario_id, total, data_pedido, email_envio) VALUES (?, ?, datetime('now'), ?)");
         $stmt->execute([
-            $_SESSION['usuario_id'],
+            $usuario_id,
             $total,
             $_POST['email']
         ]);
         $pedido_id = $pdo->lastInsertId();
-        
+
         $stmt = $pdo->prepare("INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)");
-        
+
         foreach ($carrinho as $item) {
             $stmt->execute([$pedido_id, $item['id'], $item['quantidade'], $item['preco']]);
-            
-            if ($item['tipo'] === 'jogo' || $item['tipo'] === 'giftcard') {
+
+            if (isset($item['tipo']) && ($item['tipo'] === 'jogo' || $item['tipo'] === 'giftcard')) {
                 $codigo = generateRandomCode(16);
                 $pdo->prepare("INSERT INTO codigos_ativos (pedido_id, produto_id, codigo, status) VALUES (?, ?, ?, 'ativo')")
                     ->execute([$pedido_id, $item['id'], $codigo]);
@@ -76,10 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
         $transactionStarted = false;
 
         unset($_SESSION['carrinho']);
-        $_SESSION['sucesso_pedido'] = "Pedido #$pedido_id realizado com sucesso! Os produtos serão enviados para seu email.";
-        header('Location: ../templates/vendas.php');
-        exit();
-        
+        $mensagemSucesso = "Pedido #$pedido_id realizado com sucesso! Os produtos serão enviados para seu email.";
+
+
     } catch (Exception $e) {
         if ($transactionStarted) {
             try {
@@ -88,10 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$exibirCarrinhoVazio) {
                 $e = new Exception($e->getMessage() . " - Falha no rollback: " . $rollbackException->getMessage(), 0, $e);
             }
         }
-        
+
         $erro = "Erro ao finalizar pedido: " . $e->getMessage();
     }
 }
+
 
 function generateRandomCode($length = 16) {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -136,6 +138,11 @@ function generateRandomCode($length = 16) {
             <?php if (isset($erro)): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($erro) ?></div>
             <?php endif; ?>
+
+            <?php if (isset($mensagemSucesso)): ?>
+                <div class="alert alert-success"><?= htmlspecialchars($mensagemSucesso) ?></div>
+            <?php endif; ?>
+
             
             <?php if ($exibirCarrinhoVazio): ?>
                 <div class="alert alert-warning text-center py-4">
@@ -175,7 +182,7 @@ function generateRandomCode($length = 16) {
                 <div class="form-checkout">
                     <h3 class="mb-3"><i class="bi bi-envelope"></i> Informações para Envio</h3>
                     
-                    <form method="POST">
+                    <form id="form-pagamento" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email para recebimento</label>
                             <input type="email" class="form-control" id="email" name="email" required
@@ -228,6 +235,22 @@ function generateRandomCode($length = 16) {
             <?php endif; ?>
         </div>
     </div>
+
+    <div id="card-processando" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;" class="card text-white bg-dark border-light shadow" role="alert">
+        <div class="card-body p-3">
+            <strong>Pagamento sendo processado...</strong>
+            <br>
+            <a href="#" id="link-saiba-mais" class="text-info text-decoration-underline">Saiba mais</a>
+        </div>
+    </div>
+
+    <div id="modal-video" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:10000;">
+        <video id="video-pagamento" controls autoplay style="width:100%; height:100%; object-fit:cover;">
+            <source src="CAMINHO_DO_VIDEO.mp4" type="video/mp4">
+            Seu navegador não suporta vídeo.
+        </video>
+    </div>
+
     
     <footer class="site-footer">
         <div class="container-fluid text-center">
@@ -248,6 +271,54 @@ function generateRandomCode($length = 16) {
         document.getElementById('cvv').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').substring(0, 4);
         });
-    </script>
+
+        document.getElementById("form-pagamento").addEventListener("submit", function(e) {
+        e.preventDefault(); 
+        const card = document.getElementById('card-processando');
+        card.style.display = 'block';
+
+        setTimeout(() => {
+            card.style.display = 'none';
+        }, 5000);
+    });
+
+    document.getElementById("link-saiba-mais").addEventListener("click", function(e) {
+        e.preventDefault();
+        document.getElementById("modal-video").style.display = "block";
+    });
+
+    document.getElementById("modal-video").addEventListener("click", function() {
+        const video = document.getElementById("video-pagamento");
+        video.pause();
+        this.style.display = "none";
+    });
+
+    const form = document.getElementById("form-pagamento");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const card = document.getElementById('card-processando');
+        card.style.display = 'block';
+
+        const formData = new FormData(form);
+
+        fetch("checkout.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(html => {
+            setTimeout(() => {
+                window.location.href = "../templates/vendas.php";
+            }, 5000);
+        })
+        .catch(error => {
+            card.style.display = 'none';
+            alert("Erro ao finalizar pedido: " + error.message);
+        });
+    });
+
+</script>
 </body>
 </html>
