@@ -7,6 +7,7 @@ body {
     flex-direction: column;
     margin: 0;
     padding: 0;
+    background-color: #030e28;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -40,7 +41,8 @@ body.carrinho {
     display: flex;
     flex-direction: column;
     background-image: url('/img/background2.jpg');
-
+    overflow-y: auto; 
+    min-height: 100vh;
 }
 
 /* --- Checkout Page --- */
@@ -956,4 +958,104 @@ body {
     .game-image img {
         max-height: 80vh;
     }
+}
+
+#card-processando {
+    width: 250px;
+    animation: fadeInUp 0.5s ease;
+    border-radius: 10px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.table-responsive {
+    max-height: none !important; 
+    overflow-y: visible !important;
+}
+
+/* Card de Download */
+.download-card {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 300px;
+    background-color: #030e28;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: none;
+    border: 1px solid #2a475e;
+    overflow: hidden;
+}
+
+.download-header {
+    padding: 12px 15px;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2a475e;
+}
+
+.download-header h6 {
+    margin: 0;
+    color: #66c0f4;
+    font-weight: bold;
+}
+
+.download-close {
+    color: #8f98a0;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.download-close:hover {
+    color: #ffffff;
+}
+
+.download-body {
+    padding: 15px;
+}
+
+.download-body p {
+    margin: 0 0 15px 0;
+    color: #ffffff;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.download-progress {
+    height: 8px;
+    background-color: #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #66c0f4;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.download-info {
+    display: flex;
+    justify-content: space-between;
+    color: #8f98a0;
+    font-size: 12px;
 }
