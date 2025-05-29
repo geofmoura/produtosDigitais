@@ -9,16 +9,13 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-// Tratamento seguro para o nome do usuário (array ou string)
 if (is_array($_SESSION['usuario'])) {
-    // Se for array, pega o campo 'nome' ou 'username' (ajuste conforme sua aplicação)
     $nome_usuario = isset($_SESSION['usuario']['nome']) 
         ? htmlspecialchars($_SESSION['usuario']['nome']) 
         : (isset($_SESSION['usuario']['username']) 
             ? htmlspecialchars($_SESSION['usuario']['username']) 
             : 'Usuário');
 } else {
-    // Se for string, usa diretamente
     $nome_usuario = htmlspecialchars($_SESSION['usuario']);
 }
 
@@ -30,19 +27,14 @@ try {
     die('Erro de conexão: ' . $e->getMessage());
 }
 
-// Busca jogos no banco de dados
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'jogo'");
 $stmt->execute();
 $jogos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Busca gift cards no banco de dados
 $stmt = $pdo->prepare("SELECT * FROM produtos WHERE tipo = 'gift_card'");
 $stmt->execute();
 $giftcards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-/**
- * Função para mapear nomes de produtos para imagens
- */
 function gerarNomeImagem($nomeProduto) {
     $mapeamento = [
         'Resident Evil 4' => 'residentevil4.jpg',
@@ -153,12 +145,10 @@ function gerarNomeImagem($nomeProduto) {
                                             </div>
                                             
                                             <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
-                                                <!-- Botão de Download (produto gratuito) -->
-                                                <a href="../server/download.php?produto_id=<?php echo $jogo['id']; ?>" class="btn btn-download w-100">
+                                                <button onclick="simulateDownload('<?php echo htmlspecialchars($jogo['nome']); ?>')" class="btn btn-download w-100">
                                                     BAIXAR
-                                                </a>
+                                                </button>
                                             <?php else: ?>
-                                                <!-- Botão de Comprar (produto pago) -->
                                                 <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
                                                     <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
                                                     <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
@@ -228,6 +218,23 @@ function gerarNomeImagem($nomeProduto) {
             <p class="footer-text mb-0">© <?php echo date('Y'); ?> Impact Store. Todos os direitos reservados.</p>
         </div>
     </footer>
+
+    <div id="downloadCard" class="download-card">
+        <div class="download-header">
+            <h6>Instalando Jogo</h6>
+            <span id="downloadClose" class="download-close">&times;</span>
+        </div>
+        <div class="download-body">
+            <p id="downloadGameName">Nome do Jogo</p>
+            <div class="download-progress">
+                <div id="downloadProgressBar" class="progress-bar"></div>
+            </div>
+            <div class="download-info">
+                <span id="downloadPercentage">0%</span>
+                <span id="downloadSpeed">0 MB/s</span>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -456,6 +463,76 @@ function gerarNomeImagem($nomeProduto) {
             }
         });
     });
+
+    let downloadInProgress = false;
+
+    function simulateDownload(gameName) {
+        if (downloadInProgress) {
+            alert('Já existe um download em andamento!');
+            return;
+        }
+        
+        downloadInProgress = true;
+        
+        const downloadCard = document.getElementById('downloadCard');
+        const downloadGameName = document.getElementById('downloadGameName');
+        const downloadProgressBar = document.getElementById('downloadProgressBar');
+        const downloadPercentage = document.getElementById('downloadPercentage');
+        const downloadSpeed = document.getElementById('downloadSpeed');
+        const downloadClose = document.getElementById('downloadClose');
+        const downloadHeader = downloadCard.querySelector('.download-header h6');
+
+        downloadProgressBar.style.width = '0%';
+        downloadPercentage.textContent = '0%';
+        downloadHeader.textContent = 'Instalando Jogo';
+
+        downloadGameName.textContent = gameName;
+        downloadCard.style.display = 'block';
+
+        let progress = 0;
+        const duration = 8000; 
+        const interval = 100; 
+        const steps = duration / interval;
+        const increment = 100 / steps;
+
+        const baseSpeed = 8 + Math.random() * 15;
+        
+        const downloadInterval = setInterval(() => {
+            progress += increment + (Math.random() * 0.5 - 0.25);
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(downloadInterval);
+
+                downloadProgressBar.style.width = '100%';
+                downloadPercentage.textContent = '100%';
+                downloadSpeed.textContent = '0 MB/s';
+
+                setTimeout(() => {
+                    downloadHeader.textContent = "Download Concluído";
+                    downloadSpeed.textContent = 'Finalizado';
+
+                    setTimeout(() => {
+                        downloadCard.style.display = 'none';
+                        downloadInProgress = false;
+                    }, 3000);
+                }, 1000);
+                return;
+            }
+
+            downloadProgressBar.style.width = `${progress}%`;
+            downloadPercentage.textContent = `${Math.round(progress)}%`;
+
+            const speedVariation = 0.7 + Math.random() * 0.6;
+            const currentSpeed = baseSpeed * speedVariation * (1 - progress/150);
+            downloadSpeed.textContent = `${Math.max(0.1, currentSpeed).toFixed(1)} MB/s`;
+        }, interval);
+
+        downloadClose.onclick = function() {
+            clearInterval(downloadInterval);
+            downloadCard.style.display = 'none';
+            downloadInProgress = false;
+        };
+    }
     </script>
 </body>
 </html>
