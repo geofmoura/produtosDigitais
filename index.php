@@ -78,8 +78,6 @@ if (isset($_SESSION['usuario'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let isLogin = true;
-
-    // Alternar entre login e cadastro
     document.getElementById('authSwitchLink').addEventListener('click', function (e) {
         e.preventDefault();
         isLogin = !isLogin;
@@ -101,25 +99,21 @@ if (isset($_SESSION['usuario'])) {
         }
     });
 
-    // Submissão do formulário
     document.getElementById('authForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const errorElement = document.getElementById('authError');
         errorElement.style.display = 'none';
 
-        // Desabilitar todos os inputs primeiro
         document.querySelectorAll('#authForm input').forEach(input => {
             input.disabled = true;
         });
 
-        // Reabilitar apenas os inputs do modo atual (login ou cadastro)
         if (isLogin) {
             document.querySelectorAll('#loginFields input').forEach(input => input.disabled = false);
         } else {
             document.querySelectorAll('#registerFields input').forEach(input => input.disabled = false);
         }
 
-        // Criar o FormData com os campos visíveis
         const formData = new FormData(this);
         const endpoint = isLogin ? 'server/login.php' : 'server/cadastro.php';
 
