@@ -35,6 +35,7 @@ IMPACTSTORE
 │   └── database.sqlite
 ├── fonts
 ├── img
+├── videos
 ├── server
 │   ├── adicionar_carrinho.php
 │   ├── cadastro.php
