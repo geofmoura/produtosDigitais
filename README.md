@@ -28,14 +28,28 @@ Loja online de produtos digitais desenvolvida com HTML, CSS, JavaScript, PHP e S
 ## Estrutura dos arquivos
 
 ```
-impact-store/
-├── index.html          # Página de login
-├── products.html       # Lista de produtos
-├── cart.html          # Carrinho
-├── css/               # Estilos
-├── js/                # Scripts
-├── php/               # Backend
-└── database/          # SQLite
+IMPACTSTORE
+├── config
+│   └── database.php
+├── db
+│   └── database.sqlite
+├── fonts
+├── img
+├── server
+│   ├── adicionar_carrinho.php
+│   ├── cadastro.php
+│   ├── login.php
+│   ├── logout.php
+│   ├── protection.php
+├── templates
+│   ├── carrinho.php
+│   ├── checkout.php
+│   ├── script.js
+│   ├── style.css
+│   └── vendas.php
+├── index.php
+└── README.md
+
 ```
 
 ## Funcionalidades principais
