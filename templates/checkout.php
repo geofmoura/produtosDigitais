@@ -245,8 +245,8 @@ function generateRandomCode($length = 16) {
     </div>
 
     <div id="modal-video" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:10000;">
-        <video id="video-pagamento" controls autoplay style="width:100%; height:100%; object-fit:cover;">
-            <source src="CAMINHO_DO_VIDEO.mp4" type="video/mp4">
+        <video id="video-pagamento" controls style="width:100%; height:100%; object-fit:cover;">
+            <source src="../videos/final.mp4" type="video/mp4">
             Seu navegador não suporta vídeo.
         </video>
     </div>
@@ -311,7 +311,7 @@ function generateRandomCode($length = 16) {
         .then(html => {
             setTimeout(() => {
                 window.location.href = "../templates/vendas.php";
-            }, 5000);
+            }, 30000);
         })
         .catch(error => {
             card.style.display = 'none';
