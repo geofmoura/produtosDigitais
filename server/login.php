@@ -15,7 +15,7 @@ try {
     }
 
     $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $senha_digitada = $_POST['senha']; 
 
     require_once __DIR__ . '/../config/database.php';
     $pdo = conectarBD();
@@ -30,7 +30,7 @@ try {
         exit();
     }
 
-    if ($senha === $usuario['senha']) {
+    if (password_verify($senha_digitada, $usuario['senha'])) {
         unset($usuario['senha']);
         $_SESSION['usuario'] = $usuario;
         $response['success'] = true;
