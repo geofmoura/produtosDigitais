@@ -117,62 +117,53 @@ function gerarNomeImagem($nomeProduto) {
         </div>
 
         <!-- Carrossel de Jogos -->
-        <section class="game-carousel">
-            <div class="carousel-wrapper">
-                <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <?php foreach ($jogos as $index => $jogo): ?>
-                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                                <div class="row game-item">
-                                    <div class="col-md-8 game-image-container">
-                                        <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
-                                             onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
-                                             class="d-block w-100 rounded game-image" 
-                                             alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
-                                    </div>
-                                    <div class="col-md-4 p-4 game-info">
-                                        <h2 class="game-title mb-3"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
-                                        <p class="game-description mb-4"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
+<!-- Carrossel de Jogos -->
+<section class="game-carousel" style="position: relative;"> <!-- posição relativa para os botões -->
+    <div class="carousel-wrapper">
+        <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <?php foreach ($jogos as $index => $jogo): ?>
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <div class="row game-item">
+                            <div class="col-md-8 game-image-container">
+                                <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
+                                     onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
+                                     class="d-block w-100 rounded game-image" 
+                                     alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
+                            </div>
+                            <div class="col-md-4 p-4 game-info">
+                                <h2 class="game-title mb-3"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
+                                <p class="game-description mb-4"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
 
-                                        <div class="game-purchase">
-                                            <div class="price-container mb-3">
-                                                <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
-                                                    <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                                    <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
-                                                <?php else: ?>
-                                                    <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                                <?php endif; ?>
-                                            </div>
-                                            
-                                            <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
-                                                <button onclick="simulateDownload('<?php echo htmlspecialchars($jogo['nome']); ?>')" class="btn btn-download w-100">
-                                                    BAIXAR
-                                                </button>
-                                            <?php else: ?>
-                                                <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
-                                                    <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
-                                                    <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
-                                                </form>
-                                            <?php endif; ?>
-                                        </div>
+                                <div class="game-purchase">
+                                    <div class="price-container mb-3">
+                                        <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
+                                            <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                            <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
+                                        <?php else: ?>
+                                            <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                        <?php endif; ?>
                                     </div>
+                                    
+                                    <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
+                                        <button onclick="simulateDownload('<?php echo htmlspecialchars($jogo['nome']); ?>')" class="btn btn-download w-100">
+                                            BAIXAR
+                                        </button>
+                                    <?php else: ?>
+                                        <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
+                                            <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
+                                            <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
-                    
-                    <!-- Controles do Carrossel -->
-                    <button class="carousel-control-prev carousel-button" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next carousel-button" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Próximo</span>
-                    </button>
-                </div>
+                <?php endforeach; ?>
             </div>
-        </section>
+        </div>
+</section>
+
                 
         <!-- Seção de Gift Cards -->
         <section id="giftcards-section" class="mt-5 giftcards-section">
