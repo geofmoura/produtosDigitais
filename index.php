@@ -78,6 +78,16 @@ if (isset($_SESSION['usuario'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let isLogin = true;
+
+    function ajustarRequired() {
+        document.querySelectorAll('#loginFields input').forEach(input => {
+            input.required = isLogin;
+        });
+        document.querySelectorAll('#registerFields input').forEach(input => {
+            input.required = !isLogin;
+        });
+    }
+
     document.getElementById('authSwitchLink').addEventListener('click', function (e) {
         e.preventDefault();
         isLogin = !isLogin;
@@ -97,17 +107,22 @@ if (isset($_SESSION['usuario'])) {
             document.getElementById('authSwitchText').textContent = 'Já tem conta?';
             document.getElementById('authSwitchLink').textContent = 'Faça login';
         }
+
+        ajustarRequired();
     });
+
+    // Inicializa o estado inicial dos campos
+    ajustarRequired();
 
     document.getElementById('authForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const errorElement = document.getElementById('authError');
         errorElement.style.display = 'none';
 
-        document.querySelectorAll('#authForm input').forEach(input => {
-            input.disabled = true;
-        });
+        // Desativa todos os inputs para evitar múltiplos envios
+        document.querySelectorAll('#authForm input').forEach(input => input.disabled = true);
 
+        // Reativa apenas os campos visíveis
         if (isLogin) {
             document.querySelectorAll('#loginFields input').forEach(input => input.disabled = false);
         } else {
@@ -148,12 +163,15 @@ if (isset($_SESSION['usuario'])) {
                 } else {
                     alert('Cadastro realizado com sucesso! Faça login para continuar.');
                     isLogin = true;
+
                     document.getElementById('authTitle').textContent = 'Faça seu Login';
                     document.getElementById('loginFields').style.display = 'block';
                     document.getElementById('registerFields').style.display = 'none';
                     document.getElementById('authButton').textContent = 'ENTRAR';
                     document.getElementById('authSwitchText').textContent = 'Não tem conta?';
                     document.getElementById('authSwitchLink').textContent = 'Cadastre-se';
+                    
+                    ajustarRequired();
                     this.reset();
                 }
             } else {
@@ -168,6 +186,7 @@ if (isset($_SESSION['usuario'])) {
         });
     });
 </script>
+
 
 </body>
 </html>
