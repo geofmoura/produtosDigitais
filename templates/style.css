@@ -49,7 +49,7 @@ body {
 /* ===== ESTILOS ESPECÍFICOS POR PÁGINA ===== */
 
 .body-tittle {
-    font-family: 'fontemeta', sans-serif;
+    font-family: 'fonte', sans-serif;
     letter-spacing: 3px;
     transition: transform 0.3s ease;
 }
