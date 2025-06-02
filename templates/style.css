@@ -1,6 +1,22 @@
 /* ===== ESTILOS GERAIS ===== */
+
+@font-face {
+    font-family: 'fonte';
+    src: url('../fonts/fonte.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fontemeta';
+    src: url('../fonts/metamorve.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'fonte', sans-serif;
     color: #ffffff;
     min-height: 100vh;
     display: flex;
@@ -12,6 +28,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    cursor: url('../cursor/cursor.cur'), auto;
 }
 
 .container {
@@ -30,6 +47,17 @@ body {
 }
 
 /* ===== ESTILOS ESPECÍFICOS POR PÁGINA ===== */
+
+.body-tittle {
+    font-family: 'fontemeta', sans-serif;
+    letter-spacing: 3px;
+    transition: transform 0.3s ease;
+}
+
+.body-tittle:hover {
+  transform: scale(1.05);
+}
+
 
 /* --- Vendas Page --- */
 body.vendas-page {
@@ -61,9 +89,11 @@ body.checkout-page {
 
 .navbar-brand {
     color: #fff !important;
-    font-weight: bold;
     font-size: 1.5rem;
+    font-family: 'fonte', sans-serif;
+    letter-spacing: 3px; 
 }
+
 
 .navbar-nav .nav-link {
     color: #c7d5e0;
@@ -86,7 +116,7 @@ body.checkout-page {
 
 .user-greeting {
     margin-right: 15px;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
 }
 
 .logout-btn {
@@ -108,7 +138,7 @@ body.checkout-page {
     max-width: 350px;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-right: 20px; 
+    margin-right: 65px; 
     margin-left: auto;
 }
 
@@ -179,12 +209,32 @@ body.checkout-page {
 }
 
 /* --- Carrossel --- */
+
+.carousel-custom-prev,
+.carousel-custom-next {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 2;
+    color: #ffffff;
+    padding: 1rem;
+}
+
+.carousel-custom-prev {
+    margin-right: 1rem;
+}
+
+.carousel-custom-next {
+    margin-left: 1rem;
+}
+
 .game-carousel {
     background-color: #030e28;
     border-radius: 8px;
     margin-bottom: 30px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
     position: relative;
 }
 
@@ -235,16 +285,25 @@ body.checkout-page {
 }
 
 .game-title {
-    color: #ffffff;
+    color: #ffffffd8;
     margin-bottom: 20px;
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.6rem;
     font-family: 'Play';
+    font-family: 'fonte', sans-serif;
+    letter-spacing: 2px;
+}
+
+.game-titlecard {
+    color: #ffffffd8;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-family: 'Play';
+    letter-spacing: 2px;
 }
 
 .game-description {
     color: #f5f5f5;
-    line-height: 2.1;
+    line-height: 2.4;
     margin-bottom: 20px;
 }
 
@@ -332,6 +391,8 @@ body.checkout-page {
     padding-bottom: 10px;
     margin-bottom: 30px;
     font-size: 1.8rem;
+    font-family: 'fonte', sans-serif;
+    letter-spacing: 2px;
 }
 
 .giftcards-container {
@@ -666,6 +727,8 @@ body.checkout-page {
     
     .game-title {
         font-size: 1.5rem;
+        font-family: 'fonte', sans-serif;
+        letter-spacing: 2px;
     }
     
     .game-price {
@@ -679,8 +742,8 @@ body.checkout-page {
     }
     
     .search-container {
-        margin-right: auto;
-        max-width: 100%;
+        margin-right: 65px;
+        
     }
     
     .table thead {
@@ -793,7 +856,9 @@ body {
 .left-image {
     flex: 1;
     overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 6, 60, 0.671);
 }
+
 
 .left-image img {
     height: 100%;
@@ -816,10 +881,9 @@ body {
 }
 
 .login-section h1 {
-    font-size: 2.5rem;
+    font-size: 3.0rem;
     margin-bottom: 2rem;
     margin-top: -3rem;
-    font-weight: bold;
     text-align: center;
 }
 
@@ -861,6 +925,11 @@ body {
     background-color: transparent !important;
     padding: 2rem;
     border-radius: 10px;
+    color: #ffffff;
+}
+
+.auth-tittle {
+    font-family: 'fonte', sans-serif;
 }
 
 .auth-container h3 {
