@@ -101,7 +101,7 @@ function gerarNomeImagem($nomeProduto) {
                     </li>
                 </ul>
 
-                <div class="d-flex align-items-center user-section">
+                <div class="user-section">
                     <span class="me-3 user-greeting">Olá, <?php echo $nome_usuario; ?>!</span>
                     <a href="../server/logout.php" class="btn btn-outline-light logout-btn">Sair</a>
                 </div>
@@ -116,53 +116,63 @@ function gerarNomeImagem($nomeProduto) {
             <div id="searchResults" class="search-results"></div>
         </div>
 
-        <!-- Carrossel de Jogos -->
-<!-- Carrossel de Jogos -->
-<section class="game-carousel" style="position: relative;"> <!-- posição relativa para os botões -->
-    <div class="carousel-wrapper">
-        <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <?php foreach ($jogos as $index => $jogo): ?>
-                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <div class="row game-item">
-                            <div class="col-md-8 game-image-container">
-                                <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
-                                     onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
-                                     class="d-block w-100 rounded game-image" 
-                                     alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
-                            </div>
-                            <div class="col-md-4 p-4 game-info">
-                                <h2 class="game-title mb-3"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
-                                <p class="game-description mb-4"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
 
-                                <div class="game-purchase">
-                                    <div class="price-container mb-3">
-                                        <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
-                                            <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                            <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
-                                        <?php else: ?>
-                                            <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
-                                        <?php endif; ?>
+    <div style="display: flex; align-items: center; justify-content: center; position: relative;">
+    <button class="carousel-custom-prev" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
+        &#10094;
+    </button>
+                <!-- Carrossel de Jogos -->
+        <section class="game-carousel" style="position: relative;">
+            <div class="carousel-wrapper">
+                <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php foreach ($jogos as $index => $jogo): ?>
+                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                <div class="row game-item">
+                                    <div class="col-md-8 game-image-container">
+                                        <img src="../img/<?php echo gerarNomeImagem($jogo['nome']); ?>" 
+                                            onerror="this.src='../img/default.jpg'; this.alt='Imagem não disponível'"
+                                            class="d-block w-100 rounded game-image" 
+                                            alt="<?php echo htmlspecialchars($jogo['nome']); ?>">
                                     </div>
-                                    
-                                    <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
-                                        <button onclick="simulateDownload('<?php echo htmlspecialchars($jogo['nome']); ?>')" class="btn btn-download w-100">
-                                            BAIXAR
-                                        </button>
-                                    <?php else: ?>
-                                        <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
-                                            <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
-                                            <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <div class="col-md-4 p-4 game-info">
+                                        <h2 class="game-title mb-3"><?php echo htmlspecialchars($jogo['nome']); ?></h2>
+                                        <p class="game-description mb-4"><?php echo htmlspecialchars($jogo['descricao']); ?></p>
+
+                                        <div class="game-purchase">
+                                            <div class="price-container mb-3">
+                                                <?php if ($jogo['promocao'] && $jogo['promocao'] != 'NULL'): ?>
+                                                    <span class="game-price-promo">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                                    <span class="game-price">R$ <?php echo number_format($jogo['promocao'], 2, ',', '.'); ?></span>
+                                                <?php else: ?>
+                                                    <span class="game-price">R$ <?php echo number_format($jogo['preco'], 2, ',', '.'); ?></span>
+                                                <?php endif; ?>
+                                            </div>
+                                            
+                                            <?php if ($jogo['preco'] == 0.00 || ($jogo['promocao'] && $jogo['promocao'] == 0.00)): ?>
+                                                <button onclick="simulateDownload('<?php echo htmlspecialchars($jogo['nome']); ?>')" class="btn btn-download w-100">
+                                                    BAIXAR
+                                                </button>
+                                            <?php else: ?>
+                                                <form action="../server/adicionar_carrinho.php" method="POST" class="purchase-form w-100">
+                                                    <input type="hidden" name="produto_id" value="<?php echo $jogo['id']; ?>">
+                                                    <button type="submit" class="btn btn-buy w-100">COMPRAR</button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
+                    
                     </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-</section>
+        </section>
+    
+    <!-- Botão Próximo -->
+    <button class="carousel-custom-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
+        &#10095; <!-- seta direita -->
+    </button>
+</div>
 
                 
         <!-- Seção de Gift Cards -->
@@ -179,7 +189,7 @@ function gerarNomeImagem($nomeProduto) {
                                      alt="<?php echo htmlspecialchars($giftcard['nome']); ?>">
                             </div>
                             <div class="game-info p-3">
-                                <h5 class="game-title"><?php echo htmlspecialchars($giftcard['nome']); ?></h5>
+                                <h5 class="game-titlecard"><?php echo htmlspecialchars($giftcard['nome']); ?></h5>
                                 
                                 <div class="game-purchase">
                                     <div class="price-container mb-2">
