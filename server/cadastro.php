@@ -8,7 +8,6 @@ error_reporting(E_ALL);
 $response = ['success' => false, 'message' => '', 'debug' => []];
 
 try {
-    // Verificação dos campos
     $required = ['nome', 'email', 'senha', 'confirmar_senha'];
     foreach ($required as $field) {
         if (empty($_POST[$field])) {
@@ -18,7 +17,6 @@ try {
         }
     }
 
-    // Validações
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         $response['message'] = 'Email inválido';
         echo json_encode($response);
@@ -31,17 +29,14 @@ try {
         exit();
     }
 
-    // Preparação dos dados
     $nome = trim($_POST['nome']);
     $email = trim($_POST['email']);
     $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
-    // Conexão com o banco
     require_once __DIR__ . '/../config/database.php';
     $pdo = conectarBD();
     $response['debug']['db_connection'] = 'OK';
 
-    // Verifica se email existe
     $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
@@ -50,7 +45,6 @@ try {
         exit();
     }
 
-    // Insere novo usuário
     $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
     $success = $stmt->execute([$nome, $email, $senha_hash]);
     
