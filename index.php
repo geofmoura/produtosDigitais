@@ -17,63 +17,63 @@ if (isset($_SESSION['usuario'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="home-page">
-<div class="background-overlay">
-    <div class="main-container">
-        <div class="left-image">
-            <img src="img/cardgame.jpg" alt="Cardgame">
-        </div>
+    <div class="background-overlay">
+        <div class="main-container">
+            <div class="left-image">
+                <img src="img/cardgame.jpg" alt="Cardgame">
+            </div>
 
-        <div class="login-section">
-            <div class="auth-container">
-                <h1>IMPACT STORE</h1>
-                <h3 id="authTitle">Faça seu Login</h3>
-                
-    <form id="authForm" method="POST">
-        <!-- Campos de Login -->
-        <div id="loginFields">
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" id="loginEmail" name="email" placeholder="E-mail" class="form-control" required>
+            <div class="login-section">
+                <div class="auth-container">
+                    <h1 class="body-tittle">IMPACT STORE</h1>
+                    <h3 id="authTitle">Faça seu Login</h3>
+                    
+        <form id="authForm" method="POST">
+            <!-- Campos de Login -->
+            <div id="loginFields">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="loginEmail" name="email" placeholder="E-mail" class="form-control" required>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="loginSenha" name="senha" placeholder="Senha" class="form-control" required>
+                </div>
             </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="loginSenha" name="senha" placeholder="Senha" class="form-control" required>
-            </div>
-        </div>
 
-        <!-- Campos de Cadastro -->
-        <div id="registerFields" style="display:none">
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" id="cadastroNome" name="nome" placeholder="Nome Completo" class="form-control">
+            <!-- Campos de Cadastro -->
+            <div id="registerFields" style="display:none">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" id="cadastroNome" name="nome" placeholder="Nome Completo" class="form-control">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="cadastroEmail" name="email" placeholder="E-mail" class="form-control">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="cadastroSenha" name="senha" placeholder="Senha" class="form-control">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="confirmarSenha" name="confirmar_senha" placeholder="Confirmar Senha" class="form-control">
+                </div>
             </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" id="cadastroEmail" name="email" placeholder="E-mail" class="form-control">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="cadastroSenha" name="senha" placeholder="Senha" class="form-control">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="confirmarSenha" name="confirmar_senha" placeholder="Confirmar Senha" class="form-control">
-            </div>
-        </div>
 
-        <div id="authError" class="alert alert-danger" style="display: none;"></div>
-        <button type="submit" id="authButton" class="btn btn-primary w-100">ENTRAR</button>
-    </form>
+            <div id="authError" class="alert alert-danger" style="display: none;"></div>
+            <button type="submit" id="authButton" class="btn btn-primary w-100">ENTRAR</button>
+        </form>
 
-                
-                <p class="text-center mt-3">
-                    <span id="authSwitchText">Não tem conta?</span> 
-                    <a href="#" class="switch-auth" id="authSwitchLink">Cadastre-se</a>
-                </p>
+                    
+                    <p class="text-center mt-3">
+                        <span id="authSwitchText">Não tem conta?</span> 
+                        <a href="#" class="switch-auth" id="authSwitchLink">Cadastre-se</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
