@@ -111,7 +111,6 @@ if (isset($_SESSION['usuario'])) {
         ajustarRequired();
     });
 
-    // Inicializa o estado inicial dos campos
     ajustarRequired();
 
     document.getElementById('authForm').addEventListener('submit', function (event) {
@@ -119,10 +118,8 @@ if (isset($_SESSION['usuario'])) {
         const errorElement = document.getElementById('authError');
         errorElement.style.display = 'none';
 
-        // Desativa todos os inputs para evitar múltiplos envios
         document.querySelectorAll('#authForm input').forEach(input => input.disabled = true);
 
-        // Reativa apenas os campos visíveis
         if (isLogin) {
             document.querySelectorAll('#loginFields input').forEach(input => input.disabled = false);
         } else {
