@@ -2,7 +2,6 @@
 session_start();
 error_log('Vendas.php - SESSION: ' . print_r($_SESSION, true));
 
-// Redireciona se o usuário não estiver logado
 if (!isset($_SESSION['usuario'])) {
     error_log('Usuário não logado, redirecionando para index.php');
     header('Location: ../index.php'); 
@@ -167,14 +166,11 @@ function gerarNomeImagem($nomeProduto) {
                     
                     </div>
         </section>
-    
-    <!-- Botão Próximo -->
+
     <button class="carousel-custom-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
-        &#10095; <!-- seta direita -->
+        &#10095; 
     </button>
 </div>
-
-                
         <!-- Seção de Gift Cards -->
         <section id="giftcards-section" class="mt-5 giftcards-section">
             <h2 class="mb-4 section-title">Gift Cards</h2>
