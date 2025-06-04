@@ -234,6 +234,7 @@ body.checkout-page {
     border-radius: 8px;
     margin-bottom: 30px;
     overflow: hidden;
+    overflow: hidden;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
     position: relative;
 }
@@ -997,20 +998,11 @@ body {
     text-decoration: underline;
 }
 
-/* Responsividade */
-@media (max-width: 992px) {
-    .game-collage {
-        display: none;
-    }
-    
-    .login-section {
-        width: 100%;
-        max-width: 100%;
-    }
-    
-    .auth-container {
-        max-width: 500px;
-    }
+
+#card-processando {
+    width: 250px;
+    animation: fadeInUp 0.5s ease;
+    border-radius: 10px;
 }
 
 @media (max-width: 576px) {
@@ -1021,18 +1013,7 @@ body {
     .auth-container {
         padding: 1.5rem;
     }
-}
 
-@media (max-height: 800px) {
-    .game-image img {
-        max-height: 80vh;
-    }
-}
-
-#card-processando {
-    width: 250px;
-    animation: fadeInUp 0.5s ease;
-    border-radius: 10px;
 }
 
 @keyframes fadeInUp {
